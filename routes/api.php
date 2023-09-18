@@ -48,8 +48,10 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('delete-remark/{id}', [CommonController::class, 'deleteRemark']);
     Route::get('remark-list', [CommonController::class, 'remarkList']);
 
-
-
+    Route::post('add-source', [CommonController::class, 'addSource']);
+    Route::post('edit-source', [CommonController::class, 'editSource']);
+    Route::get('delete-source/{id}', [CommonController::class, 'deleteSource']);
+    Route::get('source-list', [CommonController::class, 'sourceList']);
 
 
     #Auth

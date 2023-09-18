@@ -9,6 +9,7 @@ use App\Models\Department;
 use App\Models\Industry;
 use App\Models\Location;
 use App\Models\CallingRemark;
+use App\Models\CandidateSource;
 use DB;
 use DataTables;
 
@@ -467,7 +468,7 @@ class CommonController extends Controller
     }
 
     /**
-     * Edit Remark
+     * Edit Calling Remark
      * 
      * @author Vishal Soni
      * @package Common
@@ -504,7 +505,7 @@ class CommonController extends Controller
 
 
     /**
-     * Delete Location
+     * Delete Calling Remark
      * 
      * @author Vishal Soni
      * @package Common
@@ -530,7 +531,7 @@ class CommonController extends Controller
     }
 
     /**
-     * Remark List
+     * Calling Remark List
      * 
      * @author Vishal Soni
      * @package Common
@@ -538,10 +539,140 @@ class CommonController extends Controller
      * @return JSON
      */
 
-     public function remarkList(Request $request) {
+    public function remarkList(Request $request) {
         try {
 
             $data = CallingRemark::select('id', 'remark');
+
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('action', function ($request) {
+                    return $request->id;
+                })
+                ->escapeColumns([])
+                ->make(true);
+            
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+
+    /**
+     * Add Candidate Source
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function addSource(Request $request) {
+        try {
+            $rule = [
+                'source' => 'required',
+                'source_name' => 'required||unique:candidate_sources,source_name'
+            ];
+
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            DB::beginTransaction();
+
+            $source = new CandidateSource;
+
+            $source->source = $request->source;
+            $source->source_name = $request->source_name;
+
+            $source->save();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.create', ['Candidate Source']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+
+    /**
+     * Edit Candidate Source
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function editSource(Request $request) {
+        try {
+            $rule = [
+                'source' => 'required',
+                'source_name' => 'required||unique:candidate_sources,source_name,' . $request->id . ',id'
+            ];
+
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            DB::beginTransaction();
+
+            $source = CandidateSource::find($request->id);
+
+            $source->source = $request->source;
+            $source->source_name = $request->source_name;
+
+            $source->save();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.update', ['Candidate Source']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+
+    /**
+     * Delete Candidate Source
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function deleteSource(Request $request) {
+        try {
+
+            DB::beginTransaction();
+
+            CandidateSource::find($request->id)->delete();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.delete', ['Candidate Source']));
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+
+    /**
+     * Candidate Source List
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function sourceList(Request $request) {
+        try {
+
+            $data = CandidateSource::select('id', 'source', 'source_name');
 
             return DataTables::of($data)
                 ->addIndexColumn()
