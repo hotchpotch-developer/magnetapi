@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\PermissionController;
 use App\Http\Controllers\API\CommonController;
+use App\Http\Controllers\API\TeamController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,10 +25,29 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     #Get User Info
     Route::get('get-auth-user-info', [AuthController::class, 'getAuthUserInfo']);
 
-    #Common DropDown
+    #Common
     Route::get('common-dropdown', [CommonController::class, 'commonDropDown']);
 
-    #Logout
+    Route::post('add-department', [CommonController::class, 'addDepartment']);
+    Route::post('edit-department', [CommonController::class, 'editDepartment']);
+    Route::get('delete-department/{id}', [CommonController::class, 'deleteDepartment']);
+    Route::get('department-list', [CommonController::class, 'departmentList']);
+
+    Route::post('add-industry', [CommonController::class, 'addIndustry']);
+    Route::post('edit-industry', [CommonController::class, 'editIndustry']);
+    Route::get('delete-industry/{id}', [CommonController::class, 'deleteIndustry']);
+    Route::get('industry-list', [CommonController::class, 'industryList']);
+
+    Route::post('add-location', [CommonController::class, 'addLocation']);
+    Route::post('edit-location', [CommonController::class, 'editLocation']);
+    Route::get('delete-location/{id}', [CommonController::class, 'deleteLocation']);
+    Route::get('location-list', [CommonController::class, 'locationList']);
+
+
+
+
+
+    #Auth
     Route::get('logout', [AuthController::class, 'logout']);
 
     #Permission
@@ -42,5 +62,10 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('delete-permission/{id}', [PermissionController::class, 'deletePermission']);
 
     Route::post('assign-permission', [PermissionController::class, 'assignPermission']);
+
+    #Teams
+    Route::post('create-team', [TeamController::class, 'createTeam']);
+    Route::post('edit-team', [TeamController::class, 'editTeam']);
+    Route::get('team-list', [TeamController::class, 'teamList']);
 
 });
