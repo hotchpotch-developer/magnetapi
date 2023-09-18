@@ -43,6 +43,11 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('delete-location/{id}', [CommonController::class, 'deleteLocation']);
     Route::get('location-list', [CommonController::class, 'locationList']);
 
+    Route::post('add-remark', [CommonController::class, 'addRemark']);
+    Route::post('edit-remark', [CommonController::class, 'editRemark']);
+    Route::get('delete-remark/{id}', [CommonController::class, 'deleteRemark']);
+    Route::get('remark-list', [CommonController::class, 'remarkList']);
+
 
 
 

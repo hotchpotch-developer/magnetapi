@@ -8,6 +8,7 @@ use Spatie\Permission\Models\Permission;
 use App\Models\Department;
 use App\Models\Industry;
 use App\Models\Location;
+use App\Models\CallingRemark;
 use DB;
 use DataTables;
 
@@ -34,7 +35,6 @@ class CommonController extends Controller
 
                     default:
                     $data = [];
-
                 }
 
                 return jsonResponse(status: true, data: $data);
@@ -412,10 +412,136 @@ class CommonController extends Controller
      * @return JSON
      */
 
-     public function locationList(Request $request) {
+    public function locationList(Request $request) {
         try {
 
             $data = Location::select('id', 'name');
+
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('action', function ($request) {
+                    return $request->id;
+                })
+                ->escapeColumns([])
+                ->make(true);
+            
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+
+    /**
+     * Add Calling Remark
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function addRemark(Request $request) {
+        try {
+            $rule = [
+                'remark' => 'required|unique:calling_remarks,remark'
+            ];
+
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            DB::beginTransaction();
+
+            $remark = new CallingRemark;
+
+            $remark->remark = $request->remark;
+
+            $remark->save();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.create', ['Calling Remark']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Edit Remark
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function editRemark(Request $request) {
+        try {
+
+            $rule = [
+                'remark' => 'required|unique:calling_remarks,remark,' . $request->id . ',id'
+            ];
+
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            DB::beginTransaction();
+
+            $remark = CallingRemark::find($request->id);
+
+            $remark->remark = $request->remark;
+
+            $remark->save();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.update', ['Calling Remark']));
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+
+    /**
+     * Delete Location
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function deleteRemark(Request $request) {
+        try {
+
+            DB::beginTransaction();
+
+            CallingRemark::find($request->id)->delete();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.delete', ['Calling Remark']));
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Remark List
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+     public function remarkList(Request $request) {
+        try {
+
+            $data = CallingRemark::select('id', 'remark');
 
             return DataTables::of($data)
                 ->addIndexColumn()
