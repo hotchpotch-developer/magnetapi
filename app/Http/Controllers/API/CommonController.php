@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 use App\Models\Department;
 use App\Models\Industry;
 use App\Models\Location;
@@ -29,11 +30,13 @@ class CommonController extends Controller
             if($request->type){
                 Switch($request->type){
                     case ('permission'):
-
                     $data = Permission::select('name AS value', 'name AS label')->get();
-
                     break;
 
+                    case('roles'):
+                    $data = Role::select('id AS value', 'name AS label')->get();
+                    break;
+                    
                     default:
                     $data = [];
                 }
