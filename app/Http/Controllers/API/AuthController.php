@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Cache\RateLimiter;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Str;
 
 class AuthController extends Controller
@@ -144,6 +145,9 @@ class AuthController extends Controller
     public function getAuthUserInfo(){
         try {
             $user = auth()->user()->only('id', 'role_id', 'first_name', 'last_name', 'email', 'profile_image', 'status');
+            if($user['role_id'] != 1){
+                $user['permissions'] = Role::find($user['role_id'])->permissions->pluck('name');
+            }
             return jsonResponse(status: 200, data: $user);
         } catch (\Throwable $th) {
             return catchResponse(method: __METHOD__, exception: $th);
