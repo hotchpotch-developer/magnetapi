@@ -13,7 +13,9 @@ return [
     "team" => [
         'create' => 'Team Member created successfully.',
         
-        'update' => 'Team Member updated successfully.'
+        'update' => 'Team Member updated successfully.',
+
+        'delete' => 'Team Member deleted successfully.'
     ],
 
     "logout" => "Logout successfully.",

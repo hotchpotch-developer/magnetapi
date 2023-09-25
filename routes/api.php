@@ -74,5 +74,6 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post('create-team', [TeamController::class, 'createTeam']);
     Route::post('edit-team', [TeamController::class, 'editTeam']);
     Route::get('team-list', [TeamController::class, 'teamList']);
+    Route::get('delete-team/{id}', [TeamController::class, 'deleteTeam']);
 
 });

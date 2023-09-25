@@ -171,5 +171,28 @@ class TeamController extends Controller
             return catchResponse(method: __METHOD__, exception: $th);
         }
     }
+
+    /**
+     * Delete Team Member
+     * 
+     * @author Vishal Soni
+     * @package Team
+     * @param Request $request
+     * @return JSON
+     */
+    
+    public function deleteTeam(Request $request) {
+        try {
+            DB::beginTransaction();
+            User::where('id', $request->id)->delete();
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.team.delete'));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
     
 }
