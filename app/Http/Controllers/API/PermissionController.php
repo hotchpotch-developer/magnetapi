@@ -116,7 +116,7 @@ class PermissionController extends Controller
     public function roleList(Request $request) {
         try {
 
-            $data = Role::select('id', 'name');
+            $data = Role::select('id', 'name')->where('id', '!=', 1);
 
             return DataTables::of($data)
                         ->addIndexColumn()
