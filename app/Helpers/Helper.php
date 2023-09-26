@@ -17,7 +17,7 @@ if(!function_exists('jsonResponse')){
 if(!function_exists('catchResponse')) {
     function catchResponse($method, $exception){
         \Log::error($method . ' Please check issue on line no '. $exception->getLine() .', error is '. $exception->getMessage());
-        return jsonResponse(500, '',__('message.error.500'));
+        return jsonResponse(status: false, error: __('message.error.500'));
     }
 }
 
