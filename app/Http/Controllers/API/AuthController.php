@@ -122,7 +122,7 @@ class AuthController extends Controller
             $user->first_name = $user->first_name;
             $user->last_name = $user->last_name;
 
-            return jsonResponse(status: 200, data: $user->only('id', 'role_id', 'first_name', 'last_name', 'email', 'profile_image', 'status', 'access_token'));
+            return jsonResponse(status: 200, data: $user->only('id', 'role_id', 'first_name', 'last_name', 'email', 'phone', 'profile_image', 'status', 'access_token'));
         } else {
             if ($user->status == 'inactive') {
                 return jsonResponse(status: 200, error: __('auth.block'));
@@ -143,14 +143,16 @@ class AuthController extends Controller
     }
 
     public function getAuthUserInfo(){
-        try {
-            $user = auth()->user()->only('id', 'role_id', 'first_name', 'last_name', 'email', 'profile_image', 'status');
+        // try {
+            $user = auth()->user()->only('id', 'role_id', 'first_name', 'last_name', 'email', 'phone', 'profile_image', 'status');
             if($user['role_id'] != 1){
                 $user['permissions'] = Role::find($user['role_id'])->permissions->pluck('name');
             }
+            $user['role_name'] = Role::find($user['role_id'])->name;
+            
             return jsonResponse(status: 200, data: $user);
-        } catch (\Throwable $th) {
-            return catchResponse(method: __METHOD__, exception: $th);
-        }
+        // } catch (\Throwable $th) {
+        //     return catchResponse(method: __METHOD__, exception: $th);
+        // }
     }
 }
