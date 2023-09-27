@@ -116,10 +116,21 @@ class PermissionController extends Controller
     public function roleList(Request $request) {
         try {
 
-            $data = Role::select('id', 'name')->where('id', '!=', 1);
+            $data = Role::select('roles.id', 'roles.name')->with('permissions')->where('id', '!=', 1);
 
             return DataTables::of($data)
                         ->addIndexColumn()
+                        ->editColumn('permissions', function ($data) {
+                            $permission = [];
+                            foreach ($data->permissions as $key => $value) {
+                                $select_permission = [
+                                    'value' => $value->id,
+                                    'label' => $value->name,
+                                ];
+                                array_push($permission, $select_permission);
+                            }
+                            return $permission;
+                        })
                         ->editColumn('action', function ($request) {
                             return $request->id;
                         })
