@@ -34,7 +34,7 @@ class CommonController extends Controller
                     break;
 
                     case('roles'):
-                    $data = Role::select('id AS value', 'name AS label')->get();
+                    $data = Role::select('id AS value', 'name AS label')->where('id', '!=', 1)->get();
                     break;
                     
                     default:
