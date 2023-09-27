@@ -143,7 +143,7 @@ class AuthController extends Controller
     }
 
     public function getAuthUserInfo(){
-        // try {
+        try {
             $user = auth()->user()->only('id', 'role_id', 'first_name', 'last_name', 'email', 'phone', 'profile_image', 'status');
             if($user['role_id'] != 1){
                 $user['permissions'] = Role::find($user['role_id'])->permissions->pluck('name');
@@ -151,8 +151,8 @@ class AuthController extends Controller
             $user['role_name'] = Role::find($user['role_id'])->name;
             
             return jsonResponse(status: 200, data: $user);
-        // } catch (\Throwable $th) {
-        //     return catchResponse(method: __METHOD__, exception: $th);
-        // }
+        } catch (\Throwable $th) {
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
     }
 }
