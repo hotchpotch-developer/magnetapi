@@ -10,6 +10,8 @@ return [
 
     "assign_permission_success" => "Permission assign successfully.",
 
+    "password_not_match" => ':0 not matched.',
+
     "team" => [
         'create' => 'Team Member created successfully.',
         

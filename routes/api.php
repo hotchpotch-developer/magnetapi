@@ -6,6 +6,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\PermissionController;
 use App\Http\Controllers\API\CommonController;
 use App\Http\Controllers\API\TeamController;
+use App\Http\Controllers\API\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +25,10 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     
     #Get User Info
     Route::get('get-auth-user-info', [AuthController::class, 'getAuthUserInfo']);
+
+    #Account Settings
+    Route::post('update-account-setting', [AdminController::class, 'updateAccountSetting']);
+    Route::post('change-password', [AdminController::class, 'changePassword']);
 
     #Common
     Route::get('common-dropdown', [CommonController::class, 'commonDropDown']);
