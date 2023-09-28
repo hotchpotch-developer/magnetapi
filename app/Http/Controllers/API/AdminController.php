@@ -107,6 +107,7 @@ class AdminController extends Controller
                         $token = explode('|', $token);
                         $user->accessToken = $token[1];
                         $user = $user->only('id', 'first_name', 'last_name', 'email', 'phone', 'role_id', 'profile_image', 'status', 'accessToken');
+                        $user['role_name'] = Role::find($user['role_id'])->name;
                         return jsonResponse(status: true, data: $user);
                     } else {
                         return jsonResponse(status: false, error: __('message.inactive_account', ['User']));
