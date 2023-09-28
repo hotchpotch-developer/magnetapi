@@ -106,15 +106,16 @@ class AdminController extends Controller
                         $token = $user->createToken('auth_token')->plainTextToken;
                         $token = explode('|', $token);
                         $user->accessToken = $token[1];
-                        return returnResponse(data: $user);
+                        $user = $user->only('id', 'first_name', 'last_name', 'email', 'phone', 'role_id', 'profile_image', 'status');
+                        return jsonResponse(status: true, data: $user);
                     } else {
-                        return returnResponse(error: __('message.inactive_account', ['User']));
+                        return jsonResponse(status: false, error: __('message.inactive_account', ['User']));
                     }
                 } else {
-                    return returnResponse(error: __('message.not_exists', ['User']));
+                    return jsonResponse(status: false, error: __('message.not_exists', ['User']));
                 }
             } else {
-                return returnResponse(error: __('message.error.500'));
+                return jsonResponse(status: false, error: __('message.error.500'));
             }
         } catch (\Throwable $th) {
             return catchResponse(method: __METHOD__, exception: $th);
