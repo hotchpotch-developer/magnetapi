@@ -11,6 +11,8 @@ return [
     "assign_permission_success" => "Permission assign successfully.",
 
     "password_not_match" => ':0 not matched.',
+    'inactive_account' => ':0 account is inactive.',
+    'not_exists' => ':0 not exists',
 
     "team" => [
         'create' => 'Team Member created successfully.',

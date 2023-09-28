@@ -29,6 +29,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     #Account Settings
     Route::post('update-account-setting', [AdminController::class, 'updateAccountSetting']);
     Route::post('change-password', [AdminController::class, 'changePassword']);
+    Route::get('direct-login', [AdminController::class, 'directLogin']);
 
     #Common
     Route::get('common-dropdown', [CommonController::class, 'commonDropDown']);

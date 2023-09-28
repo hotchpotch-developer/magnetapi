@@ -81,4 +81,38 @@ class AdminController extends Controller
             return catchResponse(method: __METHOD__, exception: $th);
         }
     }
+
+    /**
+     * Direct Login
+     * 
+     * @package Admin
+     * @author  Vishal Soni
+     * @param   Request $request
+     * @return  JsonResponse
+     */
+
+    public function directLogin(Request $request)
+    {
+        try {
+            if ($request->id) {
+                $user = User::find($request->id);
+                if ($user) {
+                    if ($user->status == 'active') {
+                        $token = $user->createToken('auth_token')->plainTextToken;
+                        $token = explode('|', $token);
+                        $user->accessToken = $token[1];
+                        return returnResponse(data: $user);
+                    } else {
+                        return returnResponse(error: __('message.inactive_account', ['User']));
+                    }
+                } else {
+                    return returnResponse(error: __('message.not_exists', ['User']));
+                }
+            } else {
+                return returnResponse(error: __('message.error.500'));
+            }
+        } catch (\Throwable $th) {
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
 }
