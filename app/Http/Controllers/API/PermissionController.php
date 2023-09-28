@@ -124,7 +124,7 @@ class PermissionController extends Controller
                             $permission = [];
                             foreach ($data->permissions as $key => $value) {
                                 $select_permission = [
-                                    'value' => $value->id,
+                                    'value' => $value->name,
                                     'label' => $value->name,
                                 ];
                                 array_push($permission, $select_permission);

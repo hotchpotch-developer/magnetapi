@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\API\AuthController;
+use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
@@ -25,7 +27,7 @@ class AdminController extends Controller
             $rule = [
                 'first_name' => 'required|alpha',
                 'last_name' => 'required|alpha',
-                'phone' => 'required|unique:users,phone,' . $request->id .',id'
+                'phone' => 'required|unique:users,phone,' . auth()->user()->id .',id'
             ];
 
             if ($errors = isValidatorFails($request, $rule)) return $errors;
@@ -37,8 +39,11 @@ class AdminController extends Controller
             $user->phone = $request->phone;
 
             $user->save();
-
-            return jsonResponse(status: true, success: __('message.update', ['Personal Details']));
+            
+            
+            $user = $user->only('id', 'first_name', 'last_name', 'email', 'phone', 'role_id', 'profile_image', 'status');
+            $user['role_name'] = Role::find($user['role_id'])->name;
+            return jsonResponse(status: true, data: $user, success: __('message.update', ['Personal Details']));
 
         } catch (\Throwable $th) {
             DB::rollBack();
