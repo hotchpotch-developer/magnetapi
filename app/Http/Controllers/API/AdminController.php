@@ -106,7 +106,7 @@ class AdminController extends Controller
                         $token = $user->createToken('auth_token')->plainTextToken;
                         $token = explode('|', $token);
                         $user->accessToken = $token[1];
-                        $user = $user->only('id', 'first_name', 'last_name', 'email', 'phone', 'role_id', 'profile_image', 'status');
+                        $user = $user->only('id', 'first_name', 'last_name', 'email', 'phone', 'role_id', 'profile_image', 'status', 'accessToken');
                         return jsonResponse(status: true, data: $user);
                     } else {
                         return jsonResponse(status: false, error: __('message.inactive_account', ['User']));
