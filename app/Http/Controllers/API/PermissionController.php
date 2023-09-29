@@ -279,7 +279,7 @@ class PermissionController extends Controller
 
             $rule = [
                 "role_id" => "required",
-                "permission_name" => "required"
+                "permission_name" => "required|array|min:1"
             ];
 
             if ($errors = isValidatorFails($request, $rule)) return $errors;
@@ -293,7 +293,6 @@ class PermissionController extends Controller
             DB::commit();
 
             return  jsonResponse(status: true, success: __('message.assign_permission_success'));
-
 
         } catch (\Throwable $th) {
             DB::rollBack();
