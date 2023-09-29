@@ -288,7 +288,7 @@ class PermissionController extends Controller
 
             $role = Role::where('id', $request->role_id)->first();
 
-            $role->givePermissionTo($request->permission_name);
+            $role->syncPermissions($request->permission_name);
 
             DB::commit();
 
