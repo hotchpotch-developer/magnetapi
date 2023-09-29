@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Setting;
+
 
 if(!function_exists('jsonResponse')){
 
@@ -64,6 +66,18 @@ if (!function_exists('deleteFiles')) {
         } catch (\Exception $e) {
             return returnResponse(error: 'Unable to delete files.');
         }
+    }
+}
+
+if (!function_exists('getSettings')) {
+    function getSettings($slug = null)
+    {
+        if ($slug != null) {
+            $data = Setting::where('slug', $slug)->first()->value;
+        } else {
+            $data = Setting::get();
+        }
+        return $data;
     }
 }
 

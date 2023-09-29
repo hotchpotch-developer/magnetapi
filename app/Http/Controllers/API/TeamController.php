@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\NewTeamMember;
 use App\Models\User;
 use DataTables;
 use DB;
@@ -65,6 +67,16 @@ class TeamController extends Controller
             $team->save();
 
             DB::commit();
+
+            $mailData = [
+                "name" => $request->first_name,
+                "email" => $request->email,
+                "password" => $request->password,
+                "company_name" => getSettings('site_name'),
+                "designation" => Role::where('id', $request->role)->first()->name,
+            ];
+
+            // Notification::route('mail', $request->email)->notify(new NewTeamMember($mailData));
 
             return jsonResponse(status: true, success: __('message.team.create'));
 
