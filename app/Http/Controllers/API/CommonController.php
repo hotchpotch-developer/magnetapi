@@ -12,6 +12,7 @@ use App\Models\Location;
 use App\Models\CallingRemark;
 use App\Models\CandidateSource;
 use App\Models\Company;
+use App\Models\Channel;
 use DB;
 use DataTables;
 
@@ -794,7 +795,7 @@ class CommonController extends Controller
      * @return JSON
      */
 
-     public function companyList(Request $request) {
+    public function companyList(Request $request) {
         try {
 
             $data = Company::select('id', 'name');
@@ -813,4 +814,127 @@ class CommonController extends Controller
         }
     }
 
+
+    /**
+     * Add Channel
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function addChannel(Request $request) {
+        try {
+            $rule = [
+                'channel_name' => 'required|unique:channels,name'
+            ];
+
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            DB::beginTransaction();
+
+            $channel = new Channel;
+
+            $channel->name = $request->channel_name;
+
+            $channel->save();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.create', ['Channel']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Edit Channel
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function editChannel(Request $request) {
+        try {
+            $rule = [
+                'channel_name' => 'required|unique:channels,name,'. $request->id .',id'
+            ];
+
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            DB::beginTransaction();
+
+            $channel = Channel::find($request->id);
+
+            $channel->name = $request->channel_name;
+
+            $channel->save();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.update', ['Channel']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+
+    /**
+     * Delete Channel
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function deleteChannel(Request $request) {
+        try {
+
+            DB::beginTransaction();
+
+            Channel::find($request->id)->delete();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.delete', ['Channel']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+
+    /**
+     * Channel List
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+     public function channelList(Request $request) {
+        try {
+
+            $data = Channel::select('id', 'name');
+
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('action', function ($request) {
+                    return $request->id;
+                })
+                ->escapeColumns([])
+                ->make(true);
+            
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
 }
