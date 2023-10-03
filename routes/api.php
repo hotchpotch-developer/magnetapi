@@ -59,6 +59,11 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('delete-source/{id}', [CommonController::class, 'deleteSource']);
     Route::get('source-list', [CommonController::class, 'sourceList']);
 
+    Route::post('add-company', [CommonController::class, 'addCompany']);
+    Route::post('edit-company', [CommonController::class, 'editCompany']);
+    Route::get('delete-company/{id}', [CommonController::class, 'deleteCompany']);
+    Route::get('company-list', [CommonController::class, 'companyList']);
+
 
     #Auth
     Route::get('logout', [AuthController::class, 'logout']);

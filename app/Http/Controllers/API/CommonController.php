@@ -11,6 +11,7 @@ use App\Models\Industry;
 use App\Models\Location;
 use App\Models\CallingRemark;
 use App\Models\CandidateSource;
+use App\Models\Company;
 use DB;
 use DataTables;
 
@@ -676,6 +677,127 @@ class CommonController extends Controller
         try {
 
             $data = CandidateSource::select('id', 'source', 'source_name');
+
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('action', function ($request) {
+                    return $request->id;
+                })
+                ->escapeColumns([])
+                ->make(true);
+            
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Add Company
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function addCompany(Request $request) {
+        try {
+            $rule = [
+                'company_name' => 'required|unique:companies,name'
+            ];
+
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            DB::beginTransaction();
+
+            $company = new Company;
+
+            $company->name = $request->company_name;
+
+            $company->save();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.create', ['Company']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Edit Company
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function editCompany(Request $request) {
+        try {
+            $rule = [
+                'company_name' => 'required|unique:companies,name,'. $request->id .',id'
+            ];
+
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            DB::beginTransaction();
+
+            $company = Company::find($request->id);
+
+            $company->name = $request->company_name;
+
+            $company->save();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.update', ['Company']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * delete Company
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function deleteCompany(Request $request) {
+        try {
+
+            DB::beginTransaction();
+
+            Company::find($request->id)->delete();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.delete', ['Company']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Candidate Source List
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+     public function companyList(Request $request) {
+        try {
+
+            $data = Company::select('id', 'name');
 
             return DataTables::of($data)
                 ->addIndexColumn()
