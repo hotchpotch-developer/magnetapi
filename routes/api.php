@@ -31,7 +31,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post('change-password', [AdminController::class, 'changePassword']);
     Route::get('direct-login', [AdminController::class, 'directLogin']);
 
-    #Common
+    #Common Entry
     Route::get('common-dropdown', [CommonController::class, 'commonDropDown']);
 
     Route::post('add-department', [CommonController::class, 'addDepartment']);
@@ -68,6 +68,16 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post('edit-channel', [CommonController::class, 'editChannel']);
     Route::get('delete-channel/{id}', [CommonController::class, 'deleteChannel']);
     Route::get('channel-list', [CommonController::class, 'channelList']);
+
+    Route::post('add-designation', [CommonController::class, 'addDesignation']);
+    Route::post('edit-designation', [CommonController::class, 'editDesignation']);
+    Route::get('delete-designation/{id}', [CommonController::class, 'deleteDesignation']);
+    Route::get('designation-list', [CommonController::class, 'designationList']);
+
+    Route::post('add-product', [CommonController::class, 'addProduct']);
+    Route::post('edit-product', [CommonController::class, 'editProduct']);
+    Route::get('delete-product/{id}', [CommonController::class, 'deleteProduct']);
+    Route::get('product-list', [CommonController::class, 'productList']);
 
 
 

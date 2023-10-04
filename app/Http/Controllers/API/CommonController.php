@@ -13,6 +13,8 @@ use App\Models\CallingRemark;
 use App\Models\CandidateSource;
 use App\Models\Company;
 use App\Models\Channel;
+use App\Models\Designation;
+use App\Models\Product;
 use DB;
 use DataTables;
 
@@ -919,10 +921,254 @@ class CommonController extends Controller
      * @return JSON
      */
 
-     public function channelList(Request $request) {
+    public function channelList(Request $request) {
         try {
 
             $data = Channel::select('id', 'name');
+
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('action', function ($request) {
+                    return $request->id;
+                })
+                ->escapeColumns([])
+                ->make(true);
+            
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+
+    /**
+     * Add Designation
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function addDesignation(Request $request) {
+        try {
+            $rule = [
+                'designation_name' => 'required|unique:designations,name'
+            ];
+
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            DB::beginTransaction();
+
+            $designation = new Designation;
+
+            $designation->name = $request->designation_name;
+
+            $designation->save();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.create', ['Designation']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Edit Designation
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function editDesignation(Request $request) {
+        try {
+            $rule = [
+                'designation_name' => 'required|unique:designations,name,'. $request->id .',id'
+            ];
+
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            DB::beginTransaction();
+
+            $designation = Designation::find($request->id);
+
+            $designation->name = $request->designation_name;
+
+            $designation->save();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.update', ['Designation']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Delete Designation
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function deleteDesignation(Request $request) {
+        try {
+
+            DB::beginTransaction();
+
+            Designation::find($request->id)->delete();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.delete', ['Designation']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Designation List
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function designationList(Request $request) {
+        try {
+
+            $data = Designation::select('id', 'name');
+
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('action', function ($request) {
+                    return $request->id;
+                })
+                ->escapeColumns([])
+                ->make(true);
+            
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+
+    /**
+     * Add Product
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function addProduct(Request $request) {
+        try {
+            $rule = [
+                'product_name' => 'required|unique:products,name'
+            ];
+
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            DB::beginTransaction();
+
+            $product = new Product;
+
+            $product->name = $request->product_name;
+
+            $product->save();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.create', ['Product']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+     /**
+     * Edit Product
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function editProduct(Request $request) {
+        try {
+            $rule = [
+                'product_name' => 'required|unique:products,name,'. $request->id .',id'
+            ];
+
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            DB::beginTransaction();
+
+            $product = Product::find($request->id);
+
+            $product->name = $request->product_name;
+
+            $product->save();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.update', ['Product']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Delete Product
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+     public function deleteProduct(Request $request) {
+        try {
+
+            DB::beginTransaction();
+
+            Product::find($request->id)->delete();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.delete', ['Product']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Products List
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+     public function productList(Request $request) {
+        try {
+
+            $data = Product::select('id', 'name');
 
             return DataTables::of($data)
                 ->addIndexColumn()
