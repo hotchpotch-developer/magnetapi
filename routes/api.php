@@ -84,6 +84,11 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('delete-level/{id}', [CommonController::class, 'deleteLevel']);
     Route::get('level-list', [CommonController::class, 'levelList']);
 
+    Route::post('add-state', [CommonController::class, 'addState']);
+    Route::post('edit-state', [CommonController::class, 'editState']);
+    Route::get('delete-state/{id}', [CommonController::class, 'deleteState']);
+    Route::get('state-list', [CommonController::class, 'stateList']);
+
 
     #Auth
     Route::get('logout', [AuthController::class, 'logout']);

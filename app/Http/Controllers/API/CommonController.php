@@ -16,6 +16,7 @@ use App\Models\Channel;
 use App\Models\Designation;
 use App\Models\Product;
 use App\Models\Level;
+use App\Models\State;
 use DB;
 use DataTables;
 
@@ -1292,6 +1293,127 @@ class CommonController extends Controller
         try {
 
             $data = Level::select('id', 'name');
+
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('action', function ($request) {
+                    return $request->id;
+                })
+                ->escapeColumns([])
+                ->make(true);
+            
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Add State
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function addState(Request $request) {
+        try {
+
+            $rule = [
+                'state_name' => 'required|unique:states,name'
+            ];
+
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            DB::beginTransaction();
+
+            $state = new State;
+
+            $state->name = $request->state_name;
+
+            $state->save();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.create', ['State']));
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Edit State
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function editState(Request $request) {
+        try {
+            $rule = [
+                'state_name' => 'required|unique:states,name,'. $request->id .',id'
+            ];
+
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            DB::beginTransaction();
+
+            $state = State::find($request->id);
+
+            $state->name = $request->state_name;
+
+            $state->save();
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.update', ['State']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Delete State
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function deleteState(Request $request) {
+        try {
+            DB::beginTransaction();
+
+            State::find($request->id)->delete();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.delete', ['State']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Products List
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function stateList(Request $request) {
+        try {
+
+            $data = State::select('id', 'name');
 
             return DataTables::of($data)
                 ->addIndexColumn()
