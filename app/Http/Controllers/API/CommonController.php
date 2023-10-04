@@ -15,6 +15,7 @@ use App\Models\Company;
 use App\Models\Channel;
 use App\Models\Designation;
 use App\Models\Product;
+use App\Models\Level;
 use DB;
 use DataTables;
 
@@ -1097,7 +1098,7 @@ class CommonController extends Controller
         }
     }
 
-     /**
+    /**
      * Edit Product
      * 
      * @author Vishal Soni
@@ -1140,7 +1141,7 @@ class CommonController extends Controller
      * @return JSON
      */
 
-     public function deleteProduct(Request $request) {
+    public function deleteProduct(Request $request) {
         try {
 
             DB::beginTransaction();
@@ -1165,10 +1166,132 @@ class CommonController extends Controller
      * @return JSON
      */
 
-     public function productList(Request $request) {
+    public function productList(Request $request) {
         try {
 
             $data = Product::select('id', 'name');
+
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('action', function ($request) {
+                    return $request->id;
+                })
+                ->escapeColumns([])
+                ->make(true);
+            
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+
+    /**
+     * Add Level
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function addLevel(Request $request) {
+        try {
+            $rule = [
+                'level_name' => 'required|unique:levels,name'
+            ];
+
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            DB::beginTransaction();
+
+            $level = new Level;
+
+            $level->name = $request->level_name;
+
+            $level->save();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.create', ['Level']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Edit Level
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function editLevel(Request $request) {
+        try {
+            $rule = [
+                'level_name' => 'required|unique:levels,name,'. $request->id .',id'
+            ];
+
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            DB::beginTransaction();
+
+            $level = Level::find($request->id);
+
+            $level->name = $request->level_name;
+
+            $level->save();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.update', ['Level']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Delete Level
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function deleteLevel(Request $request) {
+        try {
+
+            DB::beginTransaction();
+
+            Level::find($request->id)->delete();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.delete', ['Level']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Products List
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function levelList(Request $request) {
+        try {
+
+            $data = Level::select('id', 'name');
 
             return DataTables::of($data)
                 ->addIndexColumn()

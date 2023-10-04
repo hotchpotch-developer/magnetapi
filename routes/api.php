@@ -79,6 +79,10 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('delete-product/{id}', [CommonController::class, 'deleteProduct']);
     Route::get('product-list', [CommonController::class, 'productList']);
 
+    Route::post('add-level', [CommonController::class, 'addLevel']);
+    Route::post('edit-level', [CommonController::class, 'editLevel']);
+    Route::get('delete-level/{id}', [CommonController::class, 'deleteLevel']);
+    Route::get('level-list', [CommonController::class, 'levelList']);
 
 
     #Auth
