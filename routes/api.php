@@ -7,6 +7,7 @@ use App\Http\Controllers\API\PermissionController;
 use App\Http\Controllers\API\CommonController;
 use App\Http\Controllers\API\TeamController;
 use App\Http\Controllers\API\AdminController;
+use App\Http\Controllers\API\JobController;
 
 /*
 |--------------------------------------------------------------------------
@@ -111,5 +112,9 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post('edit-team', [TeamController::class, 'editTeam']);
     Route::get('team-list', [TeamController::class, 'teamList']);
     Route::get('delete-team/{id}', [TeamController::class, 'deleteTeam']);
+
+    #Job
+    Route::post('create-job', [JobController::class, 'createJob']);
+    Route::get('job-list', [JobController::class, 'jobList']);
 
 });
