@@ -17,6 +17,7 @@ use App\Models\Designation;
 use App\Models\Product;
 use App\Models\Level;
 use App\Models\State;
+use App\Models\User;
 use DB;
 use DataTables;
 
