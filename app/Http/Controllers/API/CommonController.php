@@ -45,7 +45,7 @@ class CommonController extends Controller
                     break;
 
                     case('reporting_user'):
-                    $data = User::select('id AS value', DB::raw("CONCAT('first_name','last_name') AS label"))->where('role_id', '!=', 1)->where('role_id', '!=', 5)->get();
+                    $data = User::select('id AS value', DB::raw("CONCAT('users.first_name','users.last_name') AS label"))->where('role_id', '!=', 1)->where('role_id', '!=', 5)->get();
                     break;
                     
                     default:
