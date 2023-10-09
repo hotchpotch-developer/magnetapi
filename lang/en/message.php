@@ -13,6 +13,7 @@ return [
     "password_not_match" => ':0 not matched.',
     'inactive_account' => ':0 account is inactive.',
     'not_exists' => ':0 not exists',
+    'reset_password_sent' => 'Reset password link share on your email.',
 
     "team" => [
         'create' => 'Team Member created successfully.',

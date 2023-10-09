@@ -9,6 +9,8 @@ use Illuminate\Cache\RateLimiter;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Str;
+use App\Models\User;
+use DB;
 
 class AuthController extends Controller
 {
@@ -152,6 +154,45 @@ class AuthController extends Controller
             
             return jsonResponse(status: 200, data: $user);
         } catch (\Throwable $th) {
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+
+    /**
+     * Forgot Password
+     * 
+     * @author Vishal Soni
+     * @package Auth
+     * @param Request $request
+     * @return Json
+     * 
+     */
+
+    public function forgotPassword(Request $request){
+        try {
+            $rule = [
+                "email" => 'required|email'
+            ];
+            
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            $user_exist = User::where('email', $request->email)->first();
+            if(!$user_exist && empty($user_exist)){
+                return jsonResponse(status: true, error: __('message.not_exists', ['User']));
+            }
+
+            $data = [
+                'email' => $request->email,
+                'token' => Str::random(60)
+            ];
+
+            DB::table('password_reset_tokens')->insert($data);
+
+            return jsonResponse(status: true, success: __('message.reset_password_sent'));
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
             return catchResponse(method: __METHOD__, exception: $th);
         }
     }

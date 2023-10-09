@@ -21,6 +21,7 @@ use App\Http\Controllers\API\JobController;
 */
 
 Route::post('login', [AuthController::class, 'login']);
+Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
 
 Route::group(['middleware' => ['auth:sanctum']], function() {
     
