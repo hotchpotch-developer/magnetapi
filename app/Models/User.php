@@ -43,4 +43,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function($model){
+            $model->emp_id = 'TM-'. str_pad(static::max('id') + 1, 3, '0', STR_PAD_LEFT);
+        });
+    }
 }

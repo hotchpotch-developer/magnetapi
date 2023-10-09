@@ -9,6 +9,7 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\NewTeamMember;
 use App\Models\User;
+use App\Models\UserMeta;
 use DataTables;
 use DB;
 
@@ -28,16 +29,21 @@ class TeamController extends Controller
             $rule = [
                 'first_name' => 'required|alpha',
                 'last_name' => 'required|alpha',
-                'phone' => 'required|unique:users,phone',
+                'phone' => 'required|unique:users,phone|numeric',
                 'email' => 'required|unique:users,email',
                 'role' => 'required',
                 'password' => 'required|min:8|regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/',
                 'status' => 'required',
-                'employee_id' => 'required|unique:users,emp_id'
+                'alternet_email' => 'nullable|sometimes|email|different:email',
+                'alternet_phone' => 'nullable|sometimes|numeric|different:phone'
             ];
 
             if($request->has('profile_image')){
                 $rule = array_merge($rule, ['profile_image' => 'required|max:3000|mimes:jpeg,png,jpg']);
+            }
+
+            if($request->has('proof_document')){
+                $rule = array_merge($rule, ['proof_document' => 'required|max:3000|mimes:jpeg,png,jpg,pdf']);
             }
 
             $message = [
@@ -48,6 +54,10 @@ class TeamController extends Controller
 
             if($request->has('profile_image')){
                 $profile_image = uploadFiles($request, 'profile_image', 'profile');
+            }
+
+            if($request->has('proof_document')){
+                $proof_document = uploadFiles($request, 'proof_document', 'team_document');
             }
 
             DB::beginTransaction();
@@ -65,6 +75,16 @@ class TeamController extends Controller
             $team->profile_image = isset($profile_image) ? $profile_image : NULL;
 
             $team->save();
+
+            $user_meta = new UserMeta;
+
+            $user_meta->user_id = $team->id;
+            $user_meta->reporting_user_id = $request->reporting_user_id;
+            $user_meta->email_1 = $request->alternet_email;
+            $user_meta->phone_1 = $request->alternet_phone;
+            $user_meta->proof_document = $proof_document ?? null;
+
+            $user_meta->save();
 
             DB::commit();
 
@@ -103,7 +123,8 @@ class TeamController extends Controller
                 'last_name' => 'required|alpha',
                 'role' => 'required',
                 'status' => 'required',
-                'employee_id' => 'required|unique:users,emp_id,' . $request->id .',id'
+                'alternet_email' => 'nullable|sometimes|email|different:email',
+                'alternet_phone' => 'nullable|sometimes|numeric|different:phone'
             ];
             
 
@@ -115,6 +136,10 @@ class TeamController extends Controller
                 $rule = array_merge($rule, ['profile_image' => 'required|max:3000|mimes:jpeg,png,jpg']);
             }
 
+            if($request->has('proof_document')){
+                $rule = array_merge($rule, ['proof_document' => 'required|max:3000|mimes:jpeg,png,jpg,pdf']);
+            }
+
             if ($errors = isValidatorFails($request, $rule)) return $errors;
 
             if($request->has('profile_image')){
@@ -124,8 +149,6 @@ class TeamController extends Controller
             DB::beginTransaction();
 
             $team = User::find($request->id);
-
-            $team->emp_id = $request->employee_id;
             $team->first_name = $request->first_name;
             $team->last_name = $request->last_name;
             $team->role_id = $request->role;
@@ -139,11 +162,29 @@ class TeamController extends Controller
                 if($team->profile_image){
                     deleteFiles($team->profile_image);
                 }
-
                 $team->profile_image = $profile_image;
             }
 
             $team->save();
+
+            if($request->has('proof_document')){
+                $proof_document = uploadFiles($request, 'proof_document', 'team_document');
+            }
+
+            $user_meta = UserMeta::where('user_id', $team->id)->first();
+
+            $user_meta->reporting_user_id = $request->reporting_user_id;
+            $user_meta->email_1 = $request->alternet_email;
+            $user_meta->phone_1 = $request->alternet_phone;
+
+            if(isset($proof_document) && $proof_document){
+                if($user_meta->proof_document){
+                    deleteFiles($user_meta->proof_document);
+                }
+                $team->proof_document = $proof_document;
+            }
+
+            $user_meta->save();
 
             DB::commit();
 
@@ -167,8 +208,9 @@ class TeamController extends Controller
 
     public function teamList(Request $request){
         try {
-            $data = Role::select('roles.id as roles_id', 'roles.name as roles_name', 'users.*')
+            $data = Role::select('roles.id as roles_id', 'roles.name as roles_name', 'users.*', 'user_metas.reporting_user_id', 'user_metas.email_1', 'user_metas.phone_1', 'user_metas.proof_document')
                         ->join('users', 'users.role_id', '=', 'roles.id')
+                        ->leftJoin('user_metas', 'user_metas.user_id', '=', 'users.id')
                         ->where('name', $request->type);
                     
                 return DataTables::of($data)
@@ -196,6 +238,7 @@ class TeamController extends Controller
     public function deleteTeam(Request $request) {
         try {
             DB::beginTransaction();
+            UserMeta::where('user_id', $request->id)->delete();
             User::where('id', $request->id)->delete();
             DB::commit();
 
