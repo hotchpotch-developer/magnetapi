@@ -42,6 +42,10 @@ class CommonController extends Controller
                     case('roles'):
                     $data = Role::select('id AS value', 'name AS label')->where('id', '!=', 1)->get();
                     break;
+
+                    case('reporting_user'):
+                    $data = User::select('id AS value', DB::raw("CONCAT('first_name','last_name') AS label"))->where('role_id', '!=', 1)->where('role_id', '!=', 5)->get();
+                    break;
                     
                     default:
                     $data = [];
