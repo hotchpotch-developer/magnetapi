@@ -220,8 +220,8 @@ class TeamController extends Controller
                 return DataTables::of($data)
                         ->addIndexColumn()
                         ->addColumn('reporting_user_name', function($request) {
-                            $user = User::select(DB::raw("CONCAT(first_name,' ',last_name) AS name"))->where('id', $request->reporting_user_id)->get();
-                            return json_decode($user);
+                            $user = User::select('first_name','last_name')->where('id', $request->reporting_user_id)->first();
+                            return $user;
                         })
                         ->editColumn('action', function ($request) {
                             return $request->id;
