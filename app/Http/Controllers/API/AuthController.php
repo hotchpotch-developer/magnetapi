@@ -177,7 +177,8 @@ class AuthController extends Controller
             
             if ($errors = isValidatorFails($request, $rule)) return $errors;
 
-            $user_exist = User::where('email', $request->email)->first();
+            $user_exist = User::where('email', $request->email)->where('status', 'active')->first();
+
             if(!$user_exist && empty($user_exist)){
                 return jsonResponse(status: true, error: __('message.not_exists', ['User']));
             }
@@ -186,6 +187,8 @@ class AuthController extends Controller
                 'email' => $request->email,
                 'token' => Str::random(60)
             ];
+
+            $reset_url = 'http://localhost:3000?token=' . encrypt($data);
 
             DB::table('password_reset_tokens')->insert($data);
 
