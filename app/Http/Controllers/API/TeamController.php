@@ -219,8 +219,8 @@ class TeamController extends Controller
                     
                 return DataTables::of($data)
                         ->addIndexColumn()
-                        ->editColumn('reporting_user_id', function($request) {
-                            return User::select('id AS value', DB::raw("CONCAT(first_name,' ',last_name) AS label"))->where('id', $request->reporting_user_id)->get();
+                        ->editColumn('reporting_user_name', function($request) {
+                            return User::select(DB::raw("CONCAT(first_name,' ',last_name) AS name"))->where('id', $request->reporting_user_id)->get();
                         })
                         ->editColumn('action', function ($request) {
                             return $request->id;
