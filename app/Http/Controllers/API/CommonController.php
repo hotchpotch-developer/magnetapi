@@ -71,6 +71,14 @@ class CommonController extends Controller
                     case('channel'):
                     $data = Channel::select('id AS value',  'name AS label')->get();
                     break;
+
+                    case('level'):
+                    $data = Level::select('id AS value',  'name AS label')->get();
+                    break;
+
+                    case('product'):
+                    $data = Product::select('id AS value',  'name AS label')->get();
+                    break;
                     
                     default:
                     $data = [];
