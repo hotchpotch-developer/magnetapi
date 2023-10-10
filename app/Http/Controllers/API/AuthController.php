@@ -11,6 +11,7 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Str;
 use App\Models\User;
 use DB;
+use Mail;
 
 class AuthController extends Controller
 {
@@ -171,6 +172,7 @@ class AuthController extends Controller
 
     public function forgotPassword(Request $request){
         try {
+            
             $rule = [
                 "email" => 'required|email'
             ];
@@ -188,9 +190,19 @@ class AuthController extends Controller
                 'token' => Str::random(60)
             ];
 
-            $reset_url = 'http://localhost:3000?token=' . encrypt($data);
+            $reset_url = getSettings('site_url').'reset-password?token=' . encrypt($data);
 
-            DB::table('password_reset_tokens')->insert($data);
+            Mail::send('emailTemplate.resetPassword', ['url' => $reset_url], function ($message) use ($request) {
+                $message->to($request->email);
+                $message->subject(env('APP_NAME') . ' | Reset Password');
+            });
+            $token_data = DB::table('password_reset_tokens')->where('email', $request->email)->first();
+
+            if(!$token_data && empty($token_data)){
+                DB::table('password_reset_tokens')->insert($data);
+            }else{
+                DB::table('password_reset_tokens')->update($data);
+            }
 
             return jsonResponse(status: true, success: __('message.reset_password_sent'));
 
