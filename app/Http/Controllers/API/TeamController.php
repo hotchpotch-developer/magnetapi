@@ -221,7 +221,7 @@ class TeamController extends Controller
                         ->addIndexColumn()
                         ->addColumn('reporting_user_name', function($request) {
                             $user = User::select(DB::raw("CONCAT(first_name,' ',last_name) AS name"))->where('id', $request->reporting_user_id)->get();
-                            return $user;
+                            return json_decode($user);
                         })
                         ->editColumn('action', function ($request) {
                             return $request->id;
