@@ -47,6 +47,30 @@ class CommonController extends Controller
                     case('reporting_user'):
                     $data = User::select('id AS value', DB::raw("CONCAT(users.first_name,' ',users.last_name) AS label"))->where('role_id', '!=', 1)->where('role_id', '!=', 5)->get();
                     break;
+
+                    case('department'):
+                    $data = Department::select('id AS value',  'name AS label')->get();
+                    break;
+
+                    case('location'):
+                    $data = Location::select('id AS value',  'name AS label')->get();
+                    break;
+
+                    case('industry'):
+                    $data = Industry::select('id AS value',  'name AS label')->get();
+                    break;
+
+                    case('state'):
+                    $data = State::select('id AS value',  'name AS label')->get();
+                    break;
+
+                    case('company'):
+                    $data = Company::select('id AS value',  'name AS label')->get();
+                    break;
+
+                    case('channel'):
+                    $data = Channel::select('id AS value',  'name AS label')->get();
+                    break;
                     
                     default:
                     $data = [];
