@@ -48,7 +48,7 @@ class User extends Authenticatable
     {
         parent::boot();
         static::creating(function($model){
-            $model->emp_id = 'TM-'. str_pad(static::max('id') + 1, 3, '0', STR_PAD_LEFT);
+            $model->emp_id = 'TM'. str_pad(static::max('id') + 1, 3, '0', STR_PAD_LEFT);
         });
     }
 }

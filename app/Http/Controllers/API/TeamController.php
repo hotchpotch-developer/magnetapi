@@ -79,7 +79,7 @@ class TeamController extends Controller
             $user_meta = new UserMeta;
 
             $user_meta->user_id = $team->id;
-            $user_meta->reporting_user_id = $request->reporting_user_id;
+            $user_meta->reporting_user_id = $request->reporting_user_id ? $request->reporting_user_id : 1;
             $user_meta->email_1 = $request->alternet_email;
             $user_meta->phone_1 = $request->alternet_phone;
             $user_meta->proof_document = $proof_document ?? null;
@@ -173,7 +173,7 @@ class TeamController extends Controller
 
             $user_meta = UserMeta::where('user_id', $team->id)->first();
 
-            $user_meta->reporting_user_id = $request->reporting_user_id;
+            $user_meta->reporting_user_id = $request->reporting_user_id ? $request->reporting_user_id : 1;
             $user_meta->email_1 = $request->alternet_email;
             $user_meta->phone_1 = $request->alternet_phone;
 
@@ -211,10 +211,17 @@ class TeamController extends Controller
             $data = Role::select('roles.id as roles_id', 'roles.name as roles_name', 'users.*', 'user_metas.reporting_user_id', 'user_metas.email_1', 'user_metas.phone_1', 'user_metas.proof_document')
                         ->join('users', 'users.role_id', '=', 'roles.id')
                         ->leftJoin('user_metas', 'user_metas.user_id', '=', 'users.id')
-                        ->where('name', $request->type);
+                        ->where('users.role_id', '!=', 1);
+                        if($request->type){
+                            $data = $data->where('name', $request->type);
+                        }
+                        
                     
                 return DataTables::of($data)
                         ->addIndexColumn()
+                        ->editColumn('reporting_user_id', function($request) {
+                            return User::select('id AS value', DB::raw("CONCAT(first_name,' ',last_name) AS label"))->where('id', $request->reporting_user_id)->first();
+                        })
                         ->editColumn('action', function ($request) {
                             return $request->id;
                         })
