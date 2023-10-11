@@ -17,6 +17,7 @@ use App\Models\Designation;
 use App\Models\Product;
 use App\Models\Level;
 use App\Models\State;
+use App\Models\SalesNonSales;
 use App\Models\User;
 use DB;
 use DataTables;
@@ -1465,4 +1466,126 @@ class CommonController extends Controller
             return catchResponse(method: __METHOD__, exception: $th);
         }
     }
+
+    /**
+     * Add Sales/Non-Sales
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function addSalesNonSales(Request $request) {
+        try {
+
+            $rule = [
+                'name' => 'required|unique:sales_non_sales,name'
+            ];
+
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            DB::beginTransaction();
+
+            $sales = new SalesNonSales;
+
+            $sales->name = $request->name;
+
+            $sales->save();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.create', ['Sales/Non-Sales']));
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Edit Sales/Non-Sales
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function editSalesNonSales(Request $request) {
+        try {
+            $rule = [
+                'name' => 'required|unique:sales_non_sales,name,'. $request->id .',id'
+            ];
+
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            DB::beginTransaction();
+
+            $sales = SalesNonSales::find($request->id);
+
+            $sales->name = $request->name;
+
+            $sales->save();
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.update', ['Sales/Non-Sales']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Delete Sales/Non-Sales
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function deleteSalesNonSales(Request $request) {
+        try {
+            DB::beginTransaction();
+
+            SalesNonSales::find($request->id)->delete();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.delete', ['Sales/Non-Sales']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Sales/Non-Sales List
+     * 
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function salesNonSalesList(Request $request) {
+        try {
+
+            $data = SalesNonSales::select('id', 'name');
+
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('action', function ($request) {
+                    return $request->id;
+                })
+                ->escapeColumns([])
+                ->make(true);
+            
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
 }

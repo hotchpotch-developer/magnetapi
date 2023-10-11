@@ -48,7 +48,7 @@ class JobController extends Controller
             $job = new Job;
 
             $job->user_id = auth()->user()->id;
-            $job->position_no = 'sfsf';
+            
             $job->hr_spoc = $request->hr_spoc;
             $job->business_spoc = $request->business_spoc;
             $job->state_id = $request->state_id;
