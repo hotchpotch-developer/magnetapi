@@ -14,7 +14,7 @@ class Job extends Model
     {
         parent::boot();
         static::creating(function($model){
-            $model->position_no = date('dmY').'-'. str_pad(static::max('id') + 1, 1, '0', STR_PAD_LEFT);
+            $model->position_no = 'JOB'.'-'. str_pad(static::max('id') + 1, 4, '0', STR_PAD_LEFT);
         });
     }
 

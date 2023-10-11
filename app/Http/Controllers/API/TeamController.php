@@ -212,7 +212,7 @@ class TeamController extends Controller
                         ->join('users', 'users.role_id', '=', 'roles.id')
                         ->leftJoin('user_metas', 'user_metas.user_id', '=', 'users.id')
                         ->where('users.role_id', '!=', 1);
-                        if($request->type){
+                        if($request->type != 'all'){
                             $data = $data->where('name', $request->type);
                         }
                         

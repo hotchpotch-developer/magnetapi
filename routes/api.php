@@ -121,6 +121,8 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 
     #Job
     Route::post('create-job', [JobController::class, 'createJob']);
+    Route::post('edit-job', [JobController::class, 'editJob']);
+    Route::get('delete-job/{id}', [JobController::class, 'deleteJob']);
     Route::get('job-list', [JobController::class, 'jobList']);
 
 });
