@@ -24,7 +24,7 @@ return new class extends Migration
             $table->integer('sales_non_sales_id');
             $table->integer('department_id');
             $table->integer('channel_id');
-            $table->integer('designation_id');
+            $table->string('designation_id');
             $table->integer('level_id');
             $table->integer('product_id');
             $table->integer('openings');

@@ -102,7 +102,7 @@ class JobController extends Controller
 
     public function jobList(){
         try {
-            $data = Job::select('jobs.*')->with(['stateName','location', 'company', 'designation', 'department']);
+            $data = Job::select('jobs.*')->with(['stateName','location', 'industry', 'salesNonSales', 'company', 'department', 'channel', 'level', 'product']);
 
             return DataTables::of($data)
                 ->addIndexColumn()
