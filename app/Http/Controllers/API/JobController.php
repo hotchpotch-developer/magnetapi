@@ -102,10 +102,55 @@ class JobController extends Controller
 
     public function jobList(){
         try {
-            $data = Job::select('jobs.*')->with(['stateName','location', 'industry', 'salesNonSales', 'company', 'department', 'channel', 'level', 'product']);
+            $data = Job::select('jobs.*')->with(['stateName','location', 'industry', 'salesNon', 'company', 'department', 'channel', 'level', 'product']);
 
             return DataTables::of($data)
                 ->addIndexColumn()
+                ->editColumn('state_name', function($request){
+                    $state =  json_decode($request->stateName, true);
+                    unset($state['id']);
+                    return $state;
+                })
+                ->editColumn('location', function($request){
+                    $location =  json_decode($request->location, true);
+                    unset($location['id']);
+                    return $location;
+                })
+                ->editColumn('industry', function($request){
+                    $industry =  json_decode($request->industry, true);
+                    unset($industry['id']);
+                    return $industry;
+                })
+                ->editColumn('company', function($request){
+                    $company =  json_decode($request->company, true);
+                    unset($company['id']);
+                    return $company;
+                })
+                ->editColumn('department', function($request){
+                    $department =  json_decode($request->department, true);
+                    unset($department['id']);
+                    return $department;
+                })
+                ->editColumn('channel', function($request){
+                    $channel =  json_decode($request->channel, true);
+                    unset($channel['id']);
+                    return $channel;
+                })
+                ->editColumn('sales_non', function($request){
+                    $channel =  json_decode($request->salesNon, true);
+                    unset($channel['id']);
+                    return $channel;
+                })
+                ->editColumn('level', function($request){
+                    $level =  json_decode($request->level, true);
+                    unset($level['id']);
+                    return $level;
+                })
+                ->editColumn('product', function($request){
+                    $product =  json_decode($request->product, true);
+                    unset($product['id']);
+                    return $product;
+                })
                 ->editColumn('action', function ($request) {
                     return $request->id;
                 })
