@@ -61,6 +61,10 @@ class CommonController extends Controller
                     $data = Industry::select('id AS value',  'name AS label')->get();
                     break;
 
+                    case('sales_no_sales'):
+                    $data = SalesNonSales::select('id AS value',  'name AS label')->get();
+                    break;
+
                     case('state'):
                     $data = State::select('id AS value',  'name AS label')->get();
                     break;
