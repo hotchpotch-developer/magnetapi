@@ -83,6 +83,7 @@ class TeamController extends Controller
             $user_meta->email_1 = $request->alternet_email;
             $user_meta->phone_1 = $request->alternet_phone;
             $user_meta->proof_document = $proof_document ?? null;
+            $user_meta->additional_information = $additional_information ?? null;
 
             $user_meta->save();
 
@@ -176,7 +177,7 @@ class TeamController extends Controller
             $user_meta->reporting_user_id = $request->reporting_user_id ? $request->reporting_user_id : 1;
             $user_meta->email_1 = $request->alternet_email;
             $user_meta->phone_1 = $request->alternet_phone;
-
+            $user_meta->additional_information = $additional_information ?? null;
             if(isset($proof_document) && $proof_document){
                 if($user_meta->proof_document){
                     deleteFiles($user_meta->proof_document);
@@ -208,7 +209,7 @@ class TeamController extends Controller
 
     public function teamList(Request $request){
         try {
-            $data = Role::select('roles.id as roles_id', 'roles.name as roles_name', 'users.*', 'user_metas.reporting_user_id', 'user_metas.email_1', 'user_metas.phone_1', 'user_metas.proof_document')
+            $data = Role::select('roles.id as roles_id', 'roles.name as roles_name', 'users.*', 'user_metas.reporting_user_id', 'user_metas.additional_information', 'user_metas.email_1', 'user_metas.phone_1', 'user_metas.proof_document')
                         ->join('users', 'users.role_id', '=', 'roles.id')
                         ->leftJoin('user_metas', 'user_metas.user_id', '=', 'users.id')
                         ->where('users.role_id', '!=', 1);
