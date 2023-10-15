@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Job;
+use App\Models\Location;
 use DataTables;
 use DB;
 class JobController extends Controller
@@ -25,7 +26,7 @@ class JobController extends Controller
                 'hr_spoc' => 'required',
                 'business_spoc' => 'required',
                 'state' => 'required',
-                'location' => 'required',
+                'location' => 'required|array|min:1',
                 'industry' => 'required',
                 'company' => 'required',
                 'sales_non_sales' => 'required',
@@ -37,20 +38,17 @@ class JobController extends Controller
                 'openings' => 'required|gt:0',
                 'ctc_from' => 'required',
                 'ctc_to' => 'required',
-                'status' => 'required'
+                'status' => 'required',
+                'job_description' => 'required'
             ];
 
-            if($request->jd_type == 'mannual'){
-                $rule = array_merge($rule, ['job_description' => 'required']);
-            }
-
-            if($request->jd_type == 'attached'){
-                $rule = array_merge($rule, ['attach_job_description' => 'required|mimes:jpg,jpeg,png|max:3000']);
+            if($request->has('attach_job_description')){
+                $rule = array_merge($rule, ['attach_job_description' => 'mimes:jpg,jpeg,png|max:3000']);
             }
 
             if ($errors = isValidatorFails($request, $rule)) return $errors;
 
-            if($request->jd_type == 'attached' && $request->has('attach_job_description')){
+            if($request->has('attach_job_description')){
                 $attached_jd = uploadFiles($request, 'attach_job_description', 'job_description');
             }
 
@@ -63,7 +61,7 @@ class JobController extends Controller
             $job->hr_spoc = $request->hr_spoc;
             $job->business_spoc = $request->business_spoc;
             $job->state_id = $request->state;
-            $job->location_id = $request->location;
+            $job->location_id = json_encode($request->location);
             $job->industry_id = $request->industry;
             $job->company_id = $request->company;
             $job->sales_non_sales_id = $request->sales_non_sales;
@@ -76,7 +74,7 @@ class JobController extends Controller
             $job->ctc_from = $request->ctc_from;
             $job->ctc_to = $request->ctc_to;
             $job->status = $request->status;
-            $job->job_description = isset($request->job_description) ? $request->job_description : null;
+            $job->job_description = $request->job_description;
             $job->attach_job_description = isset($attached_jd) ? $attached_jd : null;
 
             $job->save();
@@ -102,7 +100,7 @@ class JobController extends Controller
 
     public function jobList(){
         try {
-            $data = Job::select('jobs.*')->with(['stateName','location', 'industry', 'salesNon', 'company', 'department', 'channel', 'level', 'product']);
+            $data = Job::select('jobs.*')->with(['stateName', 'industry', 'salesNon', 'company', 'department', 'channel', 'level', 'product']);
 
             return DataTables::of($data)
                 ->addIndexColumn()
@@ -111,10 +109,9 @@ class JobController extends Controller
                     unset($state['id']);
                     return $state;
                 })
-                ->editColumn('location', function($request){
-                    $location =  json_decode($request->location, true);
-                    unset($location['id']);
-                    return $location;
+                ->editColumn('location_id', function($request){
+                   $location_data = Location::select('id AS value', 'name AS label')->whereIn('id', json_decode($request->location_id))->get()->toArray();
+                   return $location_data;
                 })
                 ->editColumn('industry', function($request){
                     $industry =  json_decode($request->industry, true);
@@ -189,20 +186,17 @@ class JobController extends Controller
                 'openings' => 'required|gt:0',
                 'ctc_from' => 'required',
                 'ctc_to' => 'required',
-                'status' => 'required'
+                'status' => 'required',
+                'job_description' => 'required'
             ];
 
-            if($request->jd_type == 'mannual'){
-                $rule = array_merge($rule, ['job_description' => 'required']);
-            }
-
-            if($request->jd_type == 'attached' && $request->has('attach_job_description')){
+            if($request->has('attach_job_description')){
                 $rule = array_merge($rule, ['attach_job_description' => 'required|mimes:jpg,jpeg,png|max:3000']);
             }
 
             if ($errors = isValidatorFails($request, $rule)) return $errors;
 
-            if($request->jd_type == 'attached' && $request->has('attach_job_description')){
+            if($request->has('attach_job_description')){
                 $attached_jd = uploadFiles($request, 'attach_job_description', 'job_description');
             }
 
@@ -213,7 +207,7 @@ class JobController extends Controller
             $job->hr_spoc = $request->hr_spoc;
             $job->business_spoc = $request->business_spoc;
             $job->state_id = $request->state;
-            $job->location_id = $request->location;
+            $job->location_id = json_encode($request->location);
             $job->industry_id = $request->industry;
             $job->company_id = $request->company;
             $job->sales_non_sales_id = $request->sales_non_sales;

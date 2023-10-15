@@ -22,10 +22,6 @@ class Job extends Model
         return $this->hasOne(State::class, 'id', 'state_id')->select('name AS label', 'id AS value', 'id');
     }
 
-    public function location(){
-        return $this->hasOne(Location::class, 'id', 'location_id')->select('name AS label', 'id AS value', 'id');
-    }
-
     public function industry(){
         return $this->hasOne(Industry::class, 'id', 'industry_id')->select('name AS label', 'id AS value', 'id');
     }
