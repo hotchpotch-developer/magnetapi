@@ -98,6 +98,11 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('delete-sales-non-sales/{id}', [CommonController::class, 'deleteSalesNonSales']);
     Route::get('sales-non-sales-list', [CommonController::class, 'salesNonSalesList']);
 
+    Route::post('add-qualification', [CommonController::class, 'addQualification']);
+    Route::post('edit-qualification', [CommonController::class, 'editQualification']);
+    Route::get('delete-qualification/{id}', [CommonController::class, 'deleteQualification']);
+    Route::get('qualification-list', [CommonController::class, 'qualificationList']);
+
 
     #Auth
     Route::get('logout', [AuthController::class, 'logout']);

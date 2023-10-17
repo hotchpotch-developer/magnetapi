@@ -14,6 +14,7 @@ use App\Models\CandidateSource;
 use App\Models\Company;
 use App\Models\Channel;
 use App\Models\Designation;
+use App\Models\HighQualification;
 use App\Models\Product;
 use App\Models\Level;
 use App\Models\State;
@@ -26,7 +27,7 @@ class CommonController extends Controller
 {
     /**
      * Common DropDown
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -84,7 +85,11 @@ class CommonController extends Controller
                     case('product'):
                     $data = Product::select('id AS value',  'name AS label')->get();
                     break;
-                    
+
+                    case('qualification'):
+                    $data = HighQualification::select('id AS value',  'name AS label')->get();
+                    break;
+
                     default:
                     $data = [];
                 }
@@ -98,7 +103,7 @@ class CommonController extends Controller
 
     /**
      * Add Department
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -135,7 +140,7 @@ class CommonController extends Controller
 
     /**
      * Edit Department
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -172,7 +177,7 @@ class CommonController extends Controller
 
     /**
      * Delete Department
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -199,7 +204,7 @@ class CommonController extends Controller
 
     /**
      * Department List
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -218,7 +223,7 @@ class CommonController extends Controller
                 })
                 ->escapeColumns([])
                 ->make(true);
-            
+
         } catch (\Throwable $th) {
             DB::rollBack();
             return catchResponse(method: __METHOD__, exception: $th);
@@ -227,7 +232,7 @@ class CommonController extends Controller
 
     /**
      * Add Industry
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -264,7 +269,7 @@ class CommonController extends Controller
 
     /**
      * Edit Industry
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -301,7 +306,7 @@ class CommonController extends Controller
 
     /**
      * Delete Industry
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -327,7 +332,7 @@ class CommonController extends Controller
 
     /**
      * Industry List
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -346,7 +351,7 @@ class CommonController extends Controller
                 })
                 ->escapeColumns([])
                 ->make(true);
-            
+
         } catch (\Throwable $th) {
             DB::rollBack();
             return catchResponse(method: __METHOD__, exception: $th);
@@ -357,7 +362,7 @@ class CommonController extends Controller
 
     /**
      * Add Location
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -394,7 +399,7 @@ class CommonController extends Controller
 
     /**
      * Edit Location
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -431,7 +436,7 @@ class CommonController extends Controller
 
     /**
      * Delete Location
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -457,7 +462,7 @@ class CommonController extends Controller
 
     /**
      * Location List
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -476,7 +481,7 @@ class CommonController extends Controller
                 })
                 ->escapeColumns([])
                 ->make(true);
-            
+
         } catch (\Throwable $th) {
             DB::rollBack();
             return catchResponse(method: __METHOD__, exception: $th);
@@ -486,7 +491,7 @@ class CommonController extends Controller
 
     /**
      * Add Calling Remark
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -520,7 +525,7 @@ class CommonController extends Controller
 
     /**
      * Edit Calling Remark
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -557,7 +562,7 @@ class CommonController extends Controller
 
     /**
      * Delete Calling Remark
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -583,7 +588,7 @@ class CommonController extends Controller
 
     /**
      * Calling Remark List
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -602,7 +607,7 @@ class CommonController extends Controller
                 })
                 ->escapeColumns([])
                 ->make(true);
-            
+
         } catch (\Throwable $th) {
             DB::rollBack();
             return catchResponse(method: __METHOD__, exception: $th);
@@ -612,7 +617,7 @@ class CommonController extends Controller
 
     /**
      * Add Candidate Source
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -649,7 +654,7 @@ class CommonController extends Controller
 
     /**
      * Edit Candidate Source
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -686,7 +691,7 @@ class CommonController extends Controller
 
     /**
      * Delete Candidate Source
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -713,7 +718,7 @@ class CommonController extends Controller
 
     /**
      * Candidate Source List
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -732,7 +737,7 @@ class CommonController extends Controller
                 })
                 ->escapeColumns([])
                 ->make(true);
-            
+
         } catch (\Throwable $th) {
             DB::rollBack();
             return catchResponse(method: __METHOD__, exception: $th);
@@ -741,7 +746,7 @@ class CommonController extends Controller
 
     /**
      * Add Company
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -775,7 +780,7 @@ class CommonController extends Controller
 
     /**
      * Edit Company
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -809,7 +814,7 @@ class CommonController extends Controller
 
     /**
      * delete Company
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -834,7 +839,7 @@ class CommonController extends Controller
 
     /**
      * Candidate Source List
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -853,7 +858,7 @@ class CommonController extends Controller
                 })
                 ->escapeColumns([])
                 ->make(true);
-            
+
         } catch (\Throwable $th) {
             DB::rollBack();
             return catchResponse(method: __METHOD__, exception: $th);
@@ -863,7 +868,7 @@ class CommonController extends Controller
 
     /**
      * Add Channel
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -897,7 +902,7 @@ class CommonController extends Controller
 
     /**
      * Edit Channel
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -932,7 +937,7 @@ class CommonController extends Controller
 
     /**
      * Delete Channel
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -958,7 +963,7 @@ class CommonController extends Controller
 
     /**
      * Channel List
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -977,7 +982,7 @@ class CommonController extends Controller
                 })
                 ->escapeColumns([])
                 ->make(true);
-            
+
         } catch (\Throwable $th) {
             DB::rollBack();
             return catchResponse(method: __METHOD__, exception: $th);
@@ -987,7 +992,7 @@ class CommonController extends Controller
 
     /**
      * Add Designation
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -1021,7 +1026,7 @@ class CommonController extends Controller
 
     /**
      * Edit Designation
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -1055,7 +1060,7 @@ class CommonController extends Controller
 
     /**
      * Delete Designation
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -1080,7 +1085,7 @@ class CommonController extends Controller
 
     /**
      * Designation List
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -1099,7 +1104,7 @@ class CommonController extends Controller
                 })
                 ->escapeColumns([])
                 ->make(true);
-            
+
         } catch (\Throwable $th) {
             DB::rollBack();
             return catchResponse(method: __METHOD__, exception: $th);
@@ -1109,7 +1114,7 @@ class CommonController extends Controller
 
     /**
      * Add Product
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -1143,7 +1148,7 @@ class CommonController extends Controller
 
     /**
      * Edit Product
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -1177,7 +1182,7 @@ class CommonController extends Controller
 
     /**
      * Delete Product
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -1202,7 +1207,7 @@ class CommonController extends Controller
 
     /**
      * Products List
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -1221,7 +1226,7 @@ class CommonController extends Controller
                 })
                 ->escapeColumns([])
                 ->make(true);
-            
+
         } catch (\Throwable $th) {
             DB::rollBack();
             return catchResponse(method: __METHOD__, exception: $th);
@@ -1231,7 +1236,7 @@ class CommonController extends Controller
 
     /**
      * Add Level
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -1265,7 +1270,7 @@ class CommonController extends Controller
 
     /**
      * Edit Level
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -1299,7 +1304,7 @@ class CommonController extends Controller
 
     /**
      * Delete Level
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -1324,7 +1329,7 @@ class CommonController extends Controller
 
     /**
      * Products List
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -1343,7 +1348,7 @@ class CommonController extends Controller
                 })
                 ->escapeColumns([])
                 ->make(true);
-            
+
         } catch (\Throwable $th) {
             DB::rollBack();
             return catchResponse(method: __METHOD__, exception: $th);
@@ -1352,7 +1357,7 @@ class CommonController extends Controller
 
     /**
      * Add State
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -1388,7 +1393,7 @@ class CommonController extends Controller
 
     /**
      * Edit State
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -1421,7 +1426,7 @@ class CommonController extends Controller
 
     /**
      * Delete State
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -1445,7 +1450,7 @@ class CommonController extends Controller
 
     /**
      * Products List
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -1464,7 +1469,7 @@ class CommonController extends Controller
                 })
                 ->escapeColumns([])
                 ->make(true);
-            
+
         } catch (\Throwable $th) {
             DB::rollBack();
             return catchResponse(method: __METHOD__, exception: $th);
@@ -1473,7 +1478,7 @@ class CommonController extends Controller
 
     /**
      * Add Sales/Non-Sales
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -1509,7 +1514,7 @@ class CommonController extends Controller
 
     /**
      * Edit Sales/Non-Sales
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -1542,7 +1547,7 @@ class CommonController extends Controller
 
     /**
      * Delete Sales/Non-Sales
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -1566,7 +1571,7 @@ class CommonController extends Controller
 
     /**
      * Sales/Non-Sales List
-     * 
+     *
      * @author Vishal Soni
      * @package Common
      * @param Request $request
@@ -1585,11 +1590,134 @@ class CommonController extends Controller
                 })
                 ->escapeColumns([])
                 ->make(true);
-            
+
         } catch (\Throwable $th) {
             DB::rollBack();
             return catchResponse(method: __METHOD__, exception: $th);
         }
     }
 
+
+    /**
+     * Add Qualification
+     *
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     *
+     */
+
+    public function addQualification(Request $request) {
+        try {
+
+            $rule = [
+                'name' => 'required|unique:high_qualifications,name'
+            ];
+
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            DB::beginTransaction();
+
+            $qualification = new HighQualification;
+
+            $qualification->name = $request->name;
+
+            $qualification->save();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.create', ['Qualification']));
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Edit Qualification
+     *
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+    public function editQualification(Request $request) {
+        try {
+            $rule = [
+                'name' => 'required|unique:high_qualifications,name,'. $request->id .',id'
+            ];
+
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            DB::beginTransaction();
+
+            $qualification = HighQualification::find($request->id);
+
+            $qualification->name = $request->name;
+
+            $qualification->save();
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.update', ['Qualification']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+
+    /**
+     * Delete Qualification
+     *
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+     public function deleteQualification(Request $request) {
+        try {
+            DB::beginTransaction();
+
+            HighQualification::find($request->id)->delete();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.delete', ['Qualification']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Qualification List
+     *
+     * @author Vishal Soni
+     * @package Common
+     * @param Request $request
+     * @return JSON
+     */
+
+     public function qualificationList(Request $request) {
+        try {
+
+            $data = HighQualification::select('id', 'name');
+
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('action', function ($request) {
+                    return $request->id;
+                })
+                ->escapeColumns([])
+                ->make(true);
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
 }
