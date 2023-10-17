@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sales_non_sales', function (Blueprint $table) {
+        Schema::create('high_qualifications', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->timestamp('created_at')->useCurrent();
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sales_non_sales');
+        Schema::dropIfExists('high_qualifications');
     }
 };
