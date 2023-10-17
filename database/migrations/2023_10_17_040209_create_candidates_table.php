@@ -37,6 +37,7 @@ return new class extends Migration
             $table->integer('current_ctc');
             $table->string('pan_no', 50);
             $table->string('employment_status', 50);
+            $table->string('resume_file')->nullable();
             $table->enum('resume_status', ['available', 'attached'])->default(null);
             $table->enum('status', ['new', 'working', 'hired', 'hold'])->default('new');
             $table->softDeletes();

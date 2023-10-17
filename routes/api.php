@@ -8,6 +8,7 @@ use App\Http\Controllers\API\CommonController;
 use App\Http\Controllers\API\TeamController;
 use App\Http\Controllers\API\AdminController;
 use App\Http\Controllers\API\JobController;
+use App\Http\Controllers\API\CandidateController;
 
 /*
 |--------------------------------------------------------------------------
