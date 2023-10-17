@@ -14,10 +14,12 @@ return [
     'inactive_account' => ':0 account is inactive.',
     'not_exists' => ':0 not exists',
     'reset_password_sent' => 'Reset password link share on your email.',
+    'token_invalid' => 'Token is not valid.',
+    'reset_success' => 'Password reset successfully.',
 
     "team" => [
         'create' => 'Team Member created successfully.',
-        
+
         'update' => 'Team Member updated successfully.',
 
         'delete' => 'Team Member deleted successfully.'

@@ -22,9 +22,10 @@ use App\Http\Controllers\API\JobController;
 
 Route::post('login', [AuthController::class, 'login']);
 Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
+Route::post('reset-password', [AuthController::class, 'resetPassword']);
 
 Route::group(['middleware' => ['auth:sanctum']], function() {
-    
+
     #Get User Info
     Route::get('get-auth-user-info', [AuthController::class, 'getAuthUserInfo']);
 

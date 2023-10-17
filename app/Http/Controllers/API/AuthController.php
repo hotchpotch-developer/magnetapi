@@ -11,6 +11,7 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
@@ -206,6 +207,48 @@ class AuthController extends Controller
 
             return jsonResponse(status: true, success: __('message.reset_password_sent'));
 
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Reset Password
+     *
+     * @package AuthController
+     * @author  Xipe Tech
+     * @param   Request $request
+     * @return  \Illuminate\Http\JsonResponse
+     */
+    public function resetPassword(Request $request)
+    {
+        try {
+            $rule = [
+                'password' => 'required|min:8|max:16',
+                'password_confirmation' => 'required|same:password',
+            ];
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+            DB::beginTransaction();
+
+            $token = decrypt($request->token);
+            $updatePassword = DB::table('password_reset_tokens')
+                ->where([
+                    'email' => $token['email'],
+                    'token' => $token['token']
+                ])
+                ->first();
+
+            if (!$updatePassword) {
+                return jsonResponse(status:false, error: __('message.token_invalid'));
+            }
+
+            User::where('email', $token['email'])->update(['password' => Hash::make($request->password)]);
+            DB::table('password_reset_tokens')->where(['email' => $token['email']])->delete();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.reset_success'));
         } catch (\Throwable $th) {
             DB::rollBack();
             return catchResponse(method: __METHOD__, exception: $th);
