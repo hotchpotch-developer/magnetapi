@@ -10,19 +10,19 @@ use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Str;
 use App\Models\User;
-use DB;
-use Mail;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
     /**
      * Login for all roles
-     * 
+     *
      * @author Vishal Soni
      * @package Auth
      * @param Request $request
      * @return JSON
-     * 
+     *
     */
 
     protected function login(Request $request){
@@ -66,7 +66,7 @@ class AuthController extends Controller
             $this->throttleKey($request), $this->maxAttempts()
         );
     }
- 
+
     # Increment the login attempts for the user.
     protected function incrementLoginAttempts(Request $request)
     {
@@ -74,37 +74,37 @@ class AuthController extends Controller
             $this->throttleKey($request), $this->decayMinutes() * 60
         );
     }
- 
+
     # Clear the login locks for the given user credentials.
     protected function clearLoginAttempts(Request $request)
     {
         $this->limiter()->clear($this->throttleKey($request));
     }
- 
+
     # Fire an event when a lockout occurs.
     protected function fireLockoutEvent(Request $request)
     {
         event(new Lockout($request));
     }
- 
+
     # Get the throttle key for the given request.
     protected function throttleKey(Request $request)
     {
         return Str::lower($request->input('email')) . '|' . $request->ip();
     }
- 
+
     # Get the rate limiter instance.
     protected function limiter()
     {
         return app(RateLimiter::class);
     }
- 
+
     # Get the maximum number of attempts to allow.
     public function maxAttempts()
     {
         return property_exists($this, 'maxAttempts') ? $this->maxAttempts : 5;
     }
- 
+
     # Get the number of minutes to throttle
     public function decayMinutes()
     {
@@ -152,7 +152,7 @@ class AuthController extends Controller
                 $user['permissions'] = Role::find($user['role_id'])->permissions->pluck('name');
             }
             $user['role_name'] = Role::find($user['role_id'])->name;
-            
+
             return jsonResponse(status: 200, data: $user);
         } catch (\Throwable $th) {
             return catchResponse(method: __METHOD__, exception: $th);
@@ -162,21 +162,21 @@ class AuthController extends Controller
 
     /**
      * Forgot Password
-     * 
+     *
      * @author Vishal Soni
      * @package Auth
      * @param Request $request
      * @return Json
-     * 
+     *
      */
 
     public function forgotPassword(Request $request){
         try {
-            
+
             $rule = [
                 "email" => 'required|email'
             ];
-            
+
             if ($errors = isValidatorFails($request, $rule)) return $errors;
 
             $user_exist = User::where('email', $request->email)->where('status', 'active')->first();
@@ -192,7 +192,7 @@ class AuthController extends Controller
 
             $reset_url = getSettings('site_url').'reset-password?token=' . encrypt($data);
 
-            Mail::send('emailTemplate.resetPassword', ['url' => $reset_url], function ($message) use ($request) {
+            Mail::send('emailTemplate.resetPassword', ['name' =>  $user_exist->first_name.' '.$user_exist->last_name,'url' => $reset_url], function ($message) use ($request) {
                 $message->to($request->email);
                 $message->subject(env('APP_NAME') . ' | Reset Password');
             });
