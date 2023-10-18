@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Notification;
 use App\Notifications\NewTeamMember;
 use App\Models\User;
 use App\Models\UserMeta;
-use DataTables;
-use DB;
+use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class TeamController extends Controller
 {
