@@ -11,12 +11,14 @@ class NewTeamMember extends Notification
 {
     use Queueable;
 
+    public $mailData;
+
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct($data)
     {
-        //
+        $this->mailData = $data;
     }
 
     /**
@@ -34,10 +36,7 @@ class NewTeamMember extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+        return (new MailMessage)->view('emailTemplate.new-member', ['data' => $this->mailData]);
     }
 
     /**
