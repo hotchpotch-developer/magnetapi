@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('source');
             $table->string('source_name');
+            $table->softDeletes();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
