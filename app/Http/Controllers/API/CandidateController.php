@@ -91,4 +91,42 @@ class CandidateController extends Controller
             return catchResponse(method: __METHOD__, exception: $th);
         }
     }
+
+    /**
+     * Edit Candidate
+     *
+     * @author Vishal Soni
+     * @package CandidateController
+     * @param Request $request
+     * @return Json
+     *
+     */
+
+    public function editCandidate(Request $request){
+        try {
+            $rule = [
+                'first_name' => 'required|min:3',
+                'last_name' => 'required|min:3',
+                'gender' => 'required',
+                'date_of_birth' => 'required',
+                'high_qualification' => 'required',
+                'state' => 'required',
+                'location' => 'required',
+                'industry' => 'required',
+                'company' => 'required',
+                'sales_non_sales' => 'required',
+                'department' => 'required',
+                'channel' => 'required',
+                'designation' => 'required',
+                'level' => 'required',
+                'experience' => 'required|numeric',
+                'current_ctc' => 'required|numeric',
+                'pan_no' => 'required',
+                'employment_status' => 'required'
+            ];
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
 }
