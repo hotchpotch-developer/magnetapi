@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('calling_remarks', function (Blueprint $table) {
             $table->id();
             $table->string('remark');
+            $table->softDeletes();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });

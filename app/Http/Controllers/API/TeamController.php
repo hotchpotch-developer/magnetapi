@@ -10,14 +10,14 @@ use Illuminate\Support\Facades\Notification;
 use App\Notifications\NewTeamMember;
 use App\Models\User;
 use App\Models\UserMeta;
-use DataTables;
-use DB;
+use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class TeamController extends Controller
 {
     /**
      * Create Team Member
-     * 
+     *
      * @author Vishal Soni
      * @package Team
      * @param Request $request
@@ -87,17 +87,17 @@ class TeamController extends Controller
 
             $user_meta->save();
 
-            DB::commit();
-
             $mailData = [
-                "name" => $request->first_name,
+                "name" => $request->first_name .' '. $request->last_name ,
                 "email" => $request->email,
                 "password" => $request->password,
                 "company_name" => getSettings('site_name'),
                 "designation" => Role::where('id', $request->role)->first()->name,
             ];
 
-            // Notification::route('mail', $request->email)->notify(new NewTeamMember($mailData));
+            Notification::route('mail', $request->email)->notify(new NewTeamMember($mailData));
+
+            DB::commit();
 
             return jsonResponse(status: true, success: __('message.team.create'));
 
@@ -109,7 +109,7 @@ class TeamController extends Controller
 
     /**
      * Edit Team Member
-     * 
+     *
      * @author Vishal Soni
      * @package Team
      * @param Request $request
@@ -118,7 +118,7 @@ class TeamController extends Controller
 
     public function editTeam(Request $request) {
         try {
-            
+
             $rule = [
                 'first_name' => 'required|alpha',
                 'last_name' => 'required|alpha',
@@ -127,7 +127,7 @@ class TeamController extends Controller
                 'alternet_email' => 'nullable|sometimes|email|different:email',
                 'alternet_phone' => 'nullable|sometimes|numeric|different:phone'
             ];
-            
+
 
             if($request->password){
                 $rule = array_merge($rule, ['password' => 'required|min:8|regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/']);
@@ -200,7 +200,7 @@ class TeamController extends Controller
 
     /**
      * List Team Member
-     * 
+     *
      * @author Vishal Soni
      * @package Team
      * @param Request $request
@@ -216,8 +216,8 @@ class TeamController extends Controller
                         if($request->type != 'all'){
                             $data = $data->where('name', $request->type);
                         }
-                        
-                    
+
+
                 return DataTables::of($data)
                         ->addIndexColumn()
                         ->addColumn('reporting_user_name', function($request) {
@@ -237,13 +237,13 @@ class TeamController extends Controller
 
     /**
      * Delete Team Member
-     * 
+     *
      * @author Vishal Soni
      * @package Team
      * @param Request $request
      * @return JSON
      */
-    
+
     public function deleteTeam(Request $request) {
         try {
             DB::beginTransaction();
@@ -258,5 +258,5 @@ class TeamController extends Controller
         }
     }
 
-    
+
 }
