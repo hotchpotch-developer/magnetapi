@@ -20,7 +20,7 @@ class CandidateController extends Controller
      */
 
     public function createCandidate(Request $request){
-        try {
+        // try {
             $rule = [
                 'first_name' => 'required|min:3',
                 'last_name' => 'required|min:3',
@@ -86,10 +86,10 @@ class CandidateController extends Controller
 
             return jsonResponse(status: true, success: __('message.create', ['Candidate']));
 
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            return catchResponse(method: __METHOD__, exception: $th);
-        }
+        // } catch (\Throwable $th) {
+        //     DB::rollBack();
+        //     return catchResponse(method: __METHOD__, exception: $th);
+        // }
     }
 
     /**
