@@ -134,5 +134,8 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 
     #Candidate
     Route::post('create-candidate', [CandidateController::class, 'createCandidate']);
+    Route::post('edit-candidate', [CandidateController::class, 'editCandidate']);
+    Route::get('candidate-list', [CandidateController::class, 'candidateList']);
+    Route::get('delete-candidate/{id}', [CandidateController::class, 'deleteCandidate']);
 
 });
