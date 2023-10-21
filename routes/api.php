@@ -34,6 +34,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::post('create-contact-details', [AdminController::class, 'createContactDetails']);
     Route::post('edit-contact-details', [AdminController::class, 'editContactDetails']);
     Route::get('delete-contact-details/{id}', [AdminController::class, 'deleteContactDetails']);
+    Route::get('list-contact-details', [AdminController::class, 'listContactDetails']);
 
     #Account Settings
     Route::post('update-account-setting', [AdminController::class, 'updateAccountSetting']);

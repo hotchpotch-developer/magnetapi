@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class AdminController extends Controller
 {
@@ -282,9 +283,47 @@ class AdminController extends Controller
 
     public function listContactDetails(){
         try {
-            $data = ContactDetail::select('contact_details.*', DB::raw())
-                                ->leftJoin('states', 'states.id', '=', 'contact_details.state_id');
-            return $data->get();
+            $data = ContactDetail::with(['stateName', 'industry', 'company', 'salesNon', 'department', 'channel', 'location']);
+
+            return DataTables::of($data)
+                            ->addIndexColumn()
+                            ->editColumn('state_name', function($request){
+                                $state =  json_decode($request->stateName, true);
+                                unset($state['id']);
+                                return $state;
+                            })
+                            ->editColumn('industry', function($request){
+                                $industry =  json_decode($request->industry, true);
+                                unset($industry['id']);
+                                return $industry;
+                            })
+                            ->editColumn('company', function($request){
+                                $company =  json_decode($request->company, true);
+                                unset($company['id']);
+                                return $company;
+                            })
+                            ->editColumn('department', function($request){
+                                $department =  json_decode($request->department, true);
+                                unset($department['id']);
+                                return $department;
+                            })
+                            ->editColumn('channel', function($request){
+                                $channel =  json_decode($request->channel, true);
+                                unset($channel['id']);
+                                return $channel;
+                            })
+                            ->editColumn('sales_non', function($request){
+                                $channel =  json_decode($request->salesNon, true);
+                                unset($channel['id']);
+                                return $channel;
+                            })
+                            ->editColumn('location', function($request){
+                                $location =  json_decode($request->location, true);
+                                unset($location['id']);
+                                return $location;
+                            })
+                            ->escapeColumns([])
+                            ->make(true);
         } catch (\Throwable $th) {
             return catchResponse(method: __METHOD__, exception: $th);
         }
