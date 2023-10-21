@@ -209,8 +209,8 @@ class TeamController extends Controller
 
     public function teamList(Request $request){
         try {
-            $data = Role::select('roles.id as roles_id', 'roles.name as roles_name', 'users.*', 'user_metas.reporting_user_id', 'user_metas.additional_information', 'user_metas.email_1', 'user_metas.phone_1', 'user_metas.proof_document')
-                        ->join('users', 'users.role_id', '=', 'roles.id')
+            $data = User::select('roles.id as roles_id', 'roles.name as roles_name', 'users.*', 'user_metas.reporting_user_id', 'user_metas.additional_information', 'user_metas.email_1', 'user_metas.phone_1', 'user_metas.proof_document')
+                        ->join('roles', 'users.role_id', '=', 'roles.id')
                         ->leftJoin('user_metas', 'user_metas.user_id', '=', 'users.id')
                         ->where('users.role_id', '!=', 1);
                         if($request->type != 'all'){
