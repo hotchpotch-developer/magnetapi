@@ -10,7 +10,7 @@ if(!function_exists('jsonResponse')){
 
     function jsonResponse($status, $data = '', $success = '', $error = '', $errors = '') {
 
-        return response()->json(["status" => $status, "data" => $data, "success" => $success, "error" => $error, "errors" => $errors]);      
+        return response()->json(["status" => $status, "data" => $data, "success" => $success, "error" => $error, "errors" => $errors]);
 
     }
 
@@ -78,6 +78,13 @@ if (!function_exists('getSettings')) {
             $data = Setting::get();
         }
         return $data;
+    }
+}
+
+if (!function_exists('dateFormat')) {
+    function dateFormat($date, $showTime = true)
+    {
+        return $showTime ? date('M d, Y h:i A', strtotime($date)) : date('M d, Y', strtotime($date));
     }
 }
 

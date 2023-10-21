@@ -83,7 +83,7 @@ class TeamController extends Controller
             $user_meta->email_1 = $request->alternet_email;
             $user_meta->phone_1 = $request->alternet_phone;
             $user_meta->proof_document = $proof_document ?? null;
-            $user_meta->additional_information = $additional_information ?? null;
+            $user_meta->additional_information = $request->additional_information ?? null;
 
             $user_meta->save();
 
@@ -177,7 +177,7 @@ class TeamController extends Controller
             $user_meta->reporting_user_id = $request->reporting_user_id ? $request->reporting_user_id : 1;
             $user_meta->email_1 = $request->alternet_email;
             $user_meta->phone_1 = $request->alternet_phone;
-            $user_meta->additional_information = $additional_information ?? null;
+            $user_meta->additional_information = $request->additional_information ?? null;
             if(isset($proof_document) && $proof_document){
                 if($user_meta->proof_document){
                     deleteFiles($user_meta->proof_document);

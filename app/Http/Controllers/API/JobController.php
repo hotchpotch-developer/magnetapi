@@ -12,12 +12,12 @@ class JobController extends Controller
 {
     /**
      * Create a Job
-     * 
+     *
      * @author Vishal Soni
      * @package Job
      * @param Request $request
      * @return Json
-     * 
+     *
      */
 
     public function createJob(Request $request){
@@ -57,7 +57,7 @@ class JobController extends Controller
             $job = new Job;
 
             $job->user_id = auth()->user()->id;
-            
+
             $job->hr_spoc = $request->hr_spoc;
             $job->business_spoc = $request->business_spoc;
             $job->state_id = $request->state;
@@ -90,12 +90,12 @@ class JobController extends Controller
 
     /**
      * Job List
-     * 
+     *
      * @author Vishal Soni
      * @package Job
      * @param Request $request
      * @return Json
-     * 
+     *
      */
 
     public function jobList(){
@@ -160,12 +160,12 @@ class JobController extends Controller
 
     /**
      * Edit a Job
-     * 
+     *
      * @author Vishal Soni
      * @package Job
      * @param Request $request
      * @return Json
-     * 
+     *
      */
 
     public function editJob(Request $request){
@@ -203,7 +203,7 @@ class JobController extends Controller
             DB::beginTransaction();
 
             $job = Job::find($request->id);
-            
+
             $job->hr_spoc = $request->hr_spoc;
             $job->business_spoc = $request->business_spoc;
             $job->state_id = $request->state;
@@ -242,12 +242,12 @@ class JobController extends Controller
 
     /**
      * Delete Job
-     * 
+     *
      * @author Vishal Soni
      * @package Job
      * @param Request $request
      * @return Json
-     * 
+     *
      */
 
     public function deleteJob(Request $request) {
