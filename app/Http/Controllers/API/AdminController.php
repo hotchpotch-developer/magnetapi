@@ -3,23 +3,23 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\API\AuthController;
+use App\Models\ContactDetail;
 use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
     /**
      * Profile Update
-     * 
+     *
      * @author Vishal Soni
      * @package Admin
      * @param Request $request
      * @return Json
-     *     
+     *
      */
 
     public function updateAccountSetting(Request $request) {
@@ -39,8 +39,8 @@ class AdminController extends Controller
             $user->phone = $request->phone;
 
             $user->save();
-            
-            
+
+
             $user = $user->only('id', 'first_name', 'last_name', 'email', 'phone', 'role_id', 'profile_image', 'status');
             $user['role_name'] = Role::find($user['role_id'])->name;
             return jsonResponse(status: true, data: $user, success: __('message.update', ['Personal Details']));
@@ -53,12 +53,12 @@ class AdminController extends Controller
 
     /**
      * Change Password
-     * 
+     *
      * @author Vishal Soni
      * @package Admin
      * @param Request $request
      * @return Json
-     *     
+     *
      */
 
     public function changePassword(Request $request){
@@ -89,7 +89,7 @@ class AdminController extends Controller
 
     /**
      * Direct Login
-     * 
+     *
      * @package Admin
      * @author  Vishal Soni
      * @param   Request $request
@@ -118,6 +118,173 @@ class AdminController extends Controller
             } else {
                 return jsonResponse(status: false, error: __('message.error.500'));
             }
+        } catch (\Throwable $th) {
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+
+    /**
+     * Create Contact Details
+     *
+     * @package Admin
+     * @author  Vishal Soni
+     * @param   Request $request
+     * @return  JsonResponse
+     *
+     */
+
+    public function createContactDetails(Request $request){
+        try {
+            $rule = [
+                'name' => 'required',
+                'email' => 'required|email',
+                'contact_no' => 'required',
+                'industry' => 'required',
+                'company' => 'required',
+                'sales_non_sales' => 'required',
+                'department' => 'required',
+                'channel' => 'required',
+                'state' => 'required',
+                'location' => 'required',
+                'address' => 'required'
+            ];
+
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            DB::beginTransaction();
+
+            $contact = new ContactDetail;
+
+            $contact->name = $request->name;
+            $contact->email = $request->email;
+            $contact->contact_no = $request->contact_no;
+            $contact->alternate_contact_no = $request->alternate_contact_no ?? null;
+            $contact->industry_id = $request->industry;
+            $contact->company_id = $request->company;
+            $contact->sales_non_sales_id = $request->sales_non_sales;
+            $contact->department_id = $request->department;
+            $contact->channel_id = $request->channel;
+            $contact->state_id = $request->state;
+            $contact->location_id = $request->location;
+            $contact->address = $request->address;
+            $contact->reporting_manager_name = $request->reporting_manager_name ?? null;
+            $contact->reporting_contact_no = $request->reporting_contact_no ?? null;
+            $contact->reporting_email = $request->reporting_email ?? null;
+            $contact->reporting_location = $request->reporting_location ?? null;
+
+            $contact->save();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.create', ['Contact Detail']));
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Update Contact Details
+     *
+     * @package Admin
+     * @author  Vishal Soni
+     * @param   Request $request
+     * @return  JsonResponse
+     *
+     */
+
+
+    public function editContactDetails(Request $request){
+        try {
+
+            $rule = [
+                'name' => 'required',
+                'email' => 'required|email',
+                'contact_no' => 'required',
+                'industry' => 'required',
+                'company' => 'required',
+                'sales_non_sales' => 'required',
+                'department' => 'required',
+                'channel' => 'required',
+                'state' => 'required',
+                'location' => 'required',
+                'address' => 'required'
+            ];
+
+
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            $contact = ContactDetail::find($request->id);
+
+            $contact->name = $request->name;
+            $contact->email = $request->email;
+            $contact->contact_no = $request->contact_no;
+            $contact->alternate_contact_no = $request->alternate_contact_no ?? null;
+            $contact->industry_id = $request->industry;
+            $contact->company_id = $request->company;
+            $contact->sales_non_sales_id = $request->sales_non_sales;
+            $contact->department_id = $request->department;
+            $contact->channel_id = $request->channel;
+            $contact->state_id = $request->state;
+            $contact->location_id = $request->location;
+            $contact->address = $request->address;
+            $contact->reporting_manager_name = $request->reporting_manager_name ?? null;
+            $contact->reporting_contact_no = $request->reporting_contact_no ?? null;
+            $contact->reporting_email = $request->reporting_email ?? null;
+            $contact->reporting_location = $request->reporting_location ?? null;
+
+            $contact->save();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.update', ['Contact Detail']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Delete Contact Details
+     *
+     * @package Admin
+     * @author  Vishal Soni
+     * @param   Request $request
+     * @return  JsonResponse
+     *
+     */
+
+    public function deleteContactDetails(Request $request){
+        try {
+            DB::beginTransaction();
+            ContactDetail::find($request->id)->delete();
+            DB::commit();
+            return jsonResponse(status: true, success: __('message.delete', ['Contact Details']));
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * List Contact Details
+     *
+     * @package Admin
+     * @author  Vishal Soni
+     * @param   Request $request
+     * @return  JsonResponse
+     *
+     */
+
+
+    public function listContactDetails(){
+        try {
+            $data = ContactDetail::select('contact_details.*', DB::raw())
+                                ->leftJoin('states', 'states.id', '=', 'contact_details.state_id');
+            return $data->get();
         } catch (\Throwable $th) {
             return catchResponse(method: __METHOD__, exception: $th);
         }

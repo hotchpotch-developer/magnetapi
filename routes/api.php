@@ -30,6 +30,11 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     #Get User Info
     Route::get('get-auth-user-info', [AuthController::class, 'getAuthUserInfo']);
 
+    #Contact Details
+    Route::post('create-contact-details', [AdminController::class, 'createContactDetails']);
+    Route::post('edit-contact-details', [AdminController::class, 'editContactDetails']);
+    Route::get('delete-contact-details/{id}', [AdminController::class, 'deleteContactDetails']);
+
     #Account Settings
     Route::post('update-account-setting', [AdminController::class, 'updateAccountSetting']);
     Route::post('change-password', [AdminController::class, 'changePassword']);
