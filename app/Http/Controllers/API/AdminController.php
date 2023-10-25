@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Attendance;
 use App\Models\ContactDetail;
 use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
@@ -322,6 +323,145 @@ class AdminController extends Controller
                                 unset($location['id']);
                                 return $location;
                             })
+                            ->escapeColumns([])
+                            ->make(true);
+        } catch (\Throwable $th) {
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+
+    /**
+     * Add Attendance
+     *
+     * @author Vishal Soni
+     * @package AdminController
+     * @param Request $request
+     * @return JSON
+     *
+     */
+
+    public function addAttendance(Request $request) {
+        try {
+            $rule = [
+                'type' => 'required',
+                'date' => 'required',
+                'time' => 'required'
+            ];
+
+            if($request->type != 'attendance'){
+                $rule = array_merge($rule, ['description' => 'required']);
+            }
+
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            DB::beginTransaction();
+
+            $record = new Attendance;
+
+            $record->user_id = auth()->user()->id;
+            $record->date = $request->date;
+            $record->time = $request->time;
+            $record->type = $request->type;
+            $record->description = $request->description ?? NULL;
+
+            $record->save();
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.create', [ucwords(str_replace('_', ' ', $request->type))]));
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Edit Attendance
+     *
+     * @author Vishal Soni
+     * @package AdminController
+     * @param Request $request
+     * @return JSON
+     *
+     */
+
+
+    public function editAttendance(Request $request){
+        try {
+
+            $rule = [
+                'type' => 'required',
+                'date' => 'required',
+                'time' => 'required'
+            ];
+
+            if($request->type != 'attendance'){
+                $rule = array_merge($rule, ['description' => 'required']);
+            }
+
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            DB::beginTransaction();
+
+            $record = Attendance::find($request->id);
+
+            $record->user_id = auth()->user()->id;
+            $record->date = $request->date;
+            $record->time = $request->time;
+            $record->type = $request->type;
+            $record->description = $request->description ?? NULL;
+
+            $record->save();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.update', [ucwords(str_replace('_', ' ', $request->type))]));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+
+    /**
+     * Delete Attendance
+     * @author Vishal Soni
+     * @package AdminController
+     * @param Request $request
+     * @return JSON
+     *
+     */
+
+
+    public function deleteAttendance(Request $request){
+        try {
+            DB::beginTransaction();
+            Attendance::find($request->id)->delete();
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.delete', ['Record']));
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * List Attendance
+     * @author Vishal Soni
+     * @package AdminController
+     * @param Request $request
+     * @return JSON
+     *
+     */
+
+    public function listAttendance(){
+        try {
+            $data = Attendance::select('attendances.id', 'attendances.user_id', 'attendances.type', 'attendances.date', 'attendances.time', 'attendances.description', 'attendances.created_at')->with(['userData']);
+
+            return DataTables::of($data)
+                            ->addIndexColumn()
                             ->escapeColumns([])
                             ->make(true);
         } catch (\Throwable $th) {
