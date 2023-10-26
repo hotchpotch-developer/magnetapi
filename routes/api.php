@@ -144,4 +144,11 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('candidate-list', [CandidateController::class, 'candidateList']);
     Route::get('delete-candidate/{id}', [CandidateController::class, 'deleteCandidate']);
 
+
+    #Attendance
+    Route::post('add-attendance', [AdminController::class, 'addAttendance']);
+    Route::post('edit-attendance', [AdminController::class, 'editAttendance']);
+    Route::get('delete-attendance/{id}', [AdminController::class, 'deleteAttendance']);
+    Route::get('list-attendance', [AdminController::class, 'listAttendance']);
+
 });
