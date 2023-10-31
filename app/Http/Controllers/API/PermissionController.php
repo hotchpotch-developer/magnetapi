@@ -13,8 +13,8 @@ class PermissionController extends Controller
 {
     /**
      * Create Role
-     * 
-     * @author Vishal Soni  
+     *
+     * @author Vishal Soni
      * @package Permission
      * @param Request $request
      * @return JSON
@@ -46,8 +46,8 @@ class PermissionController extends Controller
 
     /**
      * Edit Role
-     * 
-     * @author Vishal Soni  
+     *
+     * @author Vishal Soni
      * @package Permission
      * @param Request $request
      * @return JSON
@@ -62,7 +62,7 @@ class PermissionController extends Controller
             if ($errors = isValidatorFails($request, $rule)) return $errors;
 
             DB::beginTransaction();
-            
+
             $role = Role::where('id', $request->id)->first();
 
             $role->name = $request->role_name;
@@ -80,8 +80,8 @@ class PermissionController extends Controller
 
     /**
      * Delete Role
-     * 
-     * @author Vishal Soni  
+     *
+     * @author Vishal Soni
      * @package Permission
      * @param Request $request
      * @return JSON
@@ -106,8 +106,8 @@ class PermissionController extends Controller
 
     /**
      * Role List
-     * 
-     * @author Vishal Soni  
+     *
+     * @author Vishal Soni
      * @package Permission
      * @param Request $request
      * @return JSON
@@ -145,8 +145,8 @@ class PermissionController extends Controller
 
     /**
      * Permission List
-     * 
-     * @author Vishal Soni  
+     *
+     * @author Vishal Soni
      * @package Permission
      * @param Request $request
      * @return JSON
@@ -173,8 +173,8 @@ class PermissionController extends Controller
 
     /**
      * Create Permission
-     * 
-     * @author Vishal Soni  
+     *
+     * @author Vishal Soni
      * @package Permission
      * @param Request $request
      * @return JSON
@@ -207,8 +207,8 @@ class PermissionController extends Controller
 
     /**
      * Edit Permission
-     * 
-     * @author Vishal Soni  
+     *
+     * @author Vishal Soni
      * @package Permission
      * @param Request $request
      * @return JSON
@@ -240,8 +240,8 @@ class PermissionController extends Controller
 
     /**
      * Delete Permission
-     * 
-     * @author Vishal Soni  
+     *
+     * @author Vishal Soni
      * @package Permission
      * @param Request $request
      * @return JSON
@@ -267,7 +267,7 @@ class PermissionController extends Controller
 
     /**
      * Assign Permission
-     * 
+     *
      * @author Vishal Soni
      * @package Permission
      * @param Request $request
