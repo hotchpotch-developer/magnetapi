@@ -471,4 +471,25 @@ class AdminController extends Controller
             return catchResponse(method: __METHOD__, exception: $th);
         }
     }
+
+    /**
+     * List Attendance
+     * @author Vishal Soni
+     * @package AdminController
+     * @param Request $request
+     * @return JSON
+     *
+     */
+
+    public function calenderList(Request $request){
+        try {
+            $data = Attendance::select('id', 'user_id', 'type', 'date', 'time', 'description')
+                                ->where('user_id', $request->id)
+                                ->get();
+
+            return jsonResponse(status: true, data: $data);
+        } catch (\Throwable $th) {
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
 }
