@@ -458,7 +458,10 @@ class AdminController extends Controller
 
     public function listAttendance(Request $request){
         try {
-            $data = Attendance::select('attendances.id', 'attendances.user_id', 'attendances.type', 'attendances.date', 'attendances.time', 'attendances.description', 'attendances.created_at')->with(['userData'])->where('user_id', $request->id);
+            $data = Attendance::select('attendances.id', 'attendances.user_id', 'attendances.type', 'attendances.date', 'attendances.time', 'attendances.description', 'attendances.created_at')->with(['userData']);
+            if(isset($request->id) && $request->id){
+               $data = $data->where('user_id', $request->id);
+            }
 
             return DataTables::of($data)
                             ->addIndexColumn()
