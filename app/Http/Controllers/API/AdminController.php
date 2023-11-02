@@ -485,7 +485,7 @@ class AdminController extends Controller
 
     public function calenderList(Request $request){
         try {
-            $data = Attendance::select('id', 'user_id', 'type', 'date', 'time', 'description')
+            $data = Attendance::select('id', 'user_id', 'type as title', 'date', 'time', 'description')
                                 ->where('user_id', $request->id)
                                 ->get();
 
