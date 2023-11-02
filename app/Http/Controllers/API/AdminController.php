@@ -140,8 +140,9 @@ class AdminController extends Controller
         try {
             $rule = [
                 'name' => 'required',
-                'email' => 'required|email',
-                'contact_no' => 'required',
+                'email' => 'required|email|email:dns|unique:contact_details,email',
+                'contact_no' => 'required|numeric|digits:10|unique:contact_details,contact_no',
+                'alternate_contact_no' => 'sometimes|nullable|numeric|digits:10|unique:contact_details,alternate_contact_no',
                 'industry' => 'required',
                 'company' => 'required',
                 'sales_non_sales' => 'required',
@@ -173,7 +174,7 @@ class AdminController extends Controller
             $contact->reporting_manager_name = $request->reporting_manager_name ?? null;
             $contact->reporting_contact_no = $request->reporting_contact_no ?? null;
             $contact->reporting_email = $request->reporting_email ?? null;
-            $contact->reporting_location = $request->reporting_location ?? null;
+            $contact->remark = $request->remark ?? null;
 
             $contact->save();
 
@@ -199,12 +200,13 @@ class AdminController extends Controller
 
 
     public function editContactDetails(Request $request){
-        try {
+        // try {
 
             $rule = [
                 'name' => 'required',
-                'email' => 'required|email',
-                'contact_no' => 'required',
+                'email' => 'required|email|email:dns|unique:contact_details,email,' .$request->id. ',id',
+                'contact_no' => 'required|numeric|digits:10|unique:contact_details,contact_no,' . $request->id . ',id',
+                'alternate_contact_no' => 'sometimes|nullable|numeric|digits:10|unique:contact_details,alternate_contact_no,' . $request->id . ',id',
                 'industry' => 'required',
                 'company' => 'required',
                 'sales_non_sales' => 'required',
@@ -235,17 +237,17 @@ class AdminController extends Controller
             $contact->reporting_manager_name = $request->reporting_manager_name ?? null;
             $contact->reporting_contact_no = $request->reporting_contact_no ?? null;
             $contact->reporting_email = $request->reporting_email ?? null;
-            $contact->reporting_location = $request->reporting_location ?? null;
+            $contact->remark = $request->remark ?? null;
 
             $contact->save();
 
             DB::commit();
 
             return jsonResponse(status: true, success: __('message.update', ['Contact Detail']));
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            return catchResponse(method: __METHOD__, exception: $th);
-        }
+        // } catch (\Throwable $th) {
+        //     DB::rollBack();
+        //     return catchResponse(method: __METHOD__, exception: $th);
+        // }
     }
 
     /**
@@ -456,14 +458,38 @@ class AdminController extends Controller
      *
      */
 
-    public function listAttendance(){
+    public function listAttendance(Request $request){
         try {
             $data = Attendance::select('attendances.id', 'attendances.user_id', 'attendances.type', 'attendances.date', 'attendances.time', 'attendances.description', 'attendances.created_at')->with(['userData']);
+            if(isset($request->id) && $request->id){
+               $data = $data->where('user_id', $request->id);
+            }
 
             return DataTables::of($data)
                             ->addIndexColumn()
                             ->escapeColumns([])
                             ->make(true);
+        } catch (\Throwable $th) {
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * List Attendance
+     * @author Vishal Soni
+     * @package AdminController
+     * @param Request $request
+     * @return JSON
+     *
+     */
+
+    public function calenderList(Request $request){
+        try {
+            $data = Attendance::select('id', 'user_id', 'type', 'date', 'time', 'description')
+                                ->where('user_id', $request->id)
+                                ->get();
+
+            return jsonResponse(status: true, data: $data);
         } catch (\Throwable $th) {
             return catchResponse(method: __METHOD__, exception: $th);
         }
