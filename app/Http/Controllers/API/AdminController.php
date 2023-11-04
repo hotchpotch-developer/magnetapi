@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\ContactDetail;
+use App\Models\Notes;
 use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -494,4 +495,144 @@ class AdminController extends Controller
             return catchResponse(method: __METHOD__, exception: $th);
         }
     }
+
+    /**
+     * Add Notes
+     * @author Vishal Soni
+     * @package AdminController
+     * @param Request $request
+     * @return JSON
+     *
+     */
+
+    public function addNotes(Request $request){
+        try {
+            $rule = [
+                'company_name' => 'required',
+                'subject' => 'required',
+                'document' => 'required|mimes:docx,pdf,csv|size:2048'
+            ];
+
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            if($request->hasFile('document')){
+                $document = uploadFiles($request, 'document', 'notes');
+            }
+
+            DB::beginTransaction();
+
+            $notes = new Notes;
+
+            $notes->company_name = $request->company_name;
+            $notes->subject = $request->subject;
+            $notes->document = $document;
+            $notes->remark = $request->remark;
+            $notes->save();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.create', ['New Notes']));
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Edit Notes
+     * @author Vishal Soni
+     * @package AdminController
+     * @param Request $request
+     * @return JSON
+     *
+     */
+
+
+    public function editNotes(Request $request){
+        try {
+            $rule = [
+                'company_name' => 'required',
+                'subject' => 'required'
+            ];
+
+            if($request->hasFile('document')){
+                $rule = array_merge($rule, ['document' => 'mimes:docx,pdf,csv|size:2048']);
+            }
+
+            if ($errors = isValidatorFails($request, $rule)) return $errors;
+
+            if($request->hasFile('document')){
+                $document = uploadFiles($request, 'document', 'notes');
+            }
+
+            DB::beginTransaction();
+
+            $notes = Notes::find($request->id);
+
+            $notes->company_name = $request->company_name;
+            $notes->subject = $request->subject;
+            $notes->remark = $request->remark;
+            if(isset($document)){
+                $notes->document = $document;
+            }
+            $notes->save();
+
+            DB::commit();
+
+            return jsonResponse(status: true, success: __('message.update', ['Notes']));
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Delete Notes
+     * @author Vishal Soni
+     * @package AdminController
+     * @param Request $request
+     * @return JSON
+     *
+     */
+
+
+    public function deleteNotes(Request $request){
+        try {
+            DB::beginTransaction();
+            Notes::find($request->id)->delete();
+            return jsonResponse(status: true, success: __('message.delete', ['Notes']));
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+    /**
+     * Notes List
+     * @author Vishal Soni
+     * @package AdminController
+     * @return JSON
+     *
+     */
+
+    public function notesList(){
+        try {
+            $data = Notes::select('id', 'company_name', 'subject', 'document', 'remark');
+
+            return DataTables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('action', function($request) {
+                        return $request->id;
+                    })
+                    ->escapeColumns([])
+                    ->make(true);
+        } catch (\Throwable $th) {
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
+    }
+
+
 }

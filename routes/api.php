@@ -152,4 +152,10 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('list-attendance/{id?}', [AdminController::class, 'listAttendance']);
     Route::get('calendar-list/{id}', [AdminController::class, 'calenderList']);
 
+    #Notes
+    Route::post('add-notes', [AdminController::class, 'addNotes']);
+    Route::post('edit-notes', [AdminController::class, 'editNotes']);
+    Route::get('delete-notes/{id}', [AdminController::class, 'deleteNotes']);
+    Route::get('notes-list', [AdminController::class, 'notesList']);
+
 });
