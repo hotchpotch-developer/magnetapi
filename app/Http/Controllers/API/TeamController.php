@@ -208,7 +208,7 @@ class TeamController extends Controller
      */
 
     public function teamList(Request $request){
-        try {
+        // try {
             $data = User::select('roles.id as roles_id', 'roles.name as roles_name', 'users.*', 'user_metas.reporting_user_id', 'user_metas.additional_information', 'user_metas.email_1', 'user_metas.phone_1', 'user_metas.proof_document')
                         ->join('roles', 'users.role_id', '=', 'roles.id')
                         ->leftJoin('user_metas', 'user_metas.user_id', '=', 'users.id')
@@ -220,6 +220,9 @@ class TeamController extends Controller
 
                 return DataTables::of($data)
                         ->addIndexColumn()
+                        ->addColumn('permissions', function($request) {
+                            return collect($request->getAllPermissions())->map(function ($item) { return ['value' => $item['name'],'label' => $item['name']]; })->toArray();
+                        })
                         ->addColumn('reporting_user_name', function($request) {
                             $user = User::select('first_name','last_name')->where('id', $request->reporting_user_id)->first();
                             return json_decode($user);
@@ -230,9 +233,9 @@ class TeamController extends Controller
                         ->escapeColumns([])
                         ->make(true);
 
-        } catch (\Throwable $th) {
-            return catchResponse(method: __METHOD__, exception: $th);
-        }
+        // } catch (\Throwable $th) {
+        //     return catchResponse(method: __METHOD__, exception: $th);
+        // }
     }
 
     /**
