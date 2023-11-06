@@ -151,7 +151,9 @@ class AuthController extends Controller
         try {
             $user = auth()->user()->only('id', 'role_id', 'first_name', 'last_name', 'email', 'phone', 'profile_image', 'status');
             if($user['role_id'] != 1){
-                $user['permissions'] = Role::find($user['role_id'])->permissions->pluck('name');
+                $permissions = User::find($user['id'])->permissions;
+                $user['permissions'] = $permissions->pluck('name');
+                $user['assigned_permissions'] = collect($permissions)->map(function ($item) { return ['value' => $item['name'],'label' => $item['name']]; })->toArray();
                 $record = Attendance::select('id', 'user_id', 'type', 'date', 'time', 'description', 'created_at')->where('user_id', $user['id'])->where('date', date('Y-m-d'))->first();
 
                 if($record && !empty($record)){

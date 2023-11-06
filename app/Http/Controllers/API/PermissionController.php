@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use DataTables;
-use DB;
+use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class PermissionController extends Controller
 {
@@ -278,7 +280,7 @@ class PermissionController extends Controller
         try {
 
             $rule = [
-                "role_id" => "required",
+                "user_id" => "required",
                 "permission_name" => "required|array|min:1"
             ];
 
@@ -286,9 +288,11 @@ class PermissionController extends Controller
 
             DB::beginTransaction();
 
-            $role = Role::where('id', $request->role_id)->first();
+            $user = User::where('id', $request->user_id)->first();
 
-            $role->syncPermissions($request->permission_name);
+            Config::set('auth.defaults.guard', 'sanctum');
+
+            $user->syncPermissions($request->permission_name);
 
             DB::commit();
 
