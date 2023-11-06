@@ -510,7 +510,7 @@ class AdminController extends Controller
             $rule = [
                 'company_name' => 'required',
                 'subject' => 'required',
-                'document' => 'required|mimes:docx,pdf,csv|size:2048'
+                'document' => 'required|mimes:docx,pdf,csv|max:2048'
             ];
 
             if ($errors = isValidatorFails($request, $rule)) return $errors;
@@ -557,7 +557,7 @@ class AdminController extends Controller
             ];
 
             if($request->hasFile('document')){
-                $rule = array_merge($rule, ['document' => 'mimes:docx,pdf,csv|size:2048']);
+                $rule = array_merge($rule, ['document' => 'mimes:docx,pdf,csv|max:2048']);
             }
 
             if ($errors = isValidatorFails($request, $rule)) return $errors;
