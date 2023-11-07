@@ -523,7 +523,7 @@ class AdminController extends Controller
 
             $notes = new Notes;
 
-            $notes->company_name = $request->company_name;
+            $notes->company_id = $request->company_name;
             $notes->subject = $request->subject;
             $notes->document = $document;
             $notes->remark = $request->remark;
@@ -570,7 +570,7 @@ class AdminController extends Controller
 
             $notes = Notes::find($request->id);
 
-            $notes->company_name = $request->company_name;
+            $notes->company_id = $request->company_name;
             $notes->subject = $request->subject;
             $notes->remark = $request->remark;
             if(isset($document)){
@@ -620,10 +620,16 @@ class AdminController extends Controller
 
     public function notesList(){
         try {
-            $data = Notes::select('id', 'company_name', 'subject', 'document', 'remark');
+            $data = Notes::select('id', 'company_id', 'subject', 'document', 'remark')->with('companies');
+
 
             return DataTables::of($data)
                     ->addIndexColumn()
+                    ->editColumn('companies', function($request){
+                        $company = json_decode($request->companies);
+                        unset($company->id);
+                        return $company;
+                    })
                     ->addColumn('action', function($request) {
                         return $request->id;
                     })

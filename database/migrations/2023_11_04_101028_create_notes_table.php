@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('notes', function (Blueprint $table) {
             $table->id();
-            $table->string('company_name');
+            $table->foreignId('company_id')->constrained();
             $table->string('subject');
             $table->string('document');
             $table->longText('remark')->nullable();
