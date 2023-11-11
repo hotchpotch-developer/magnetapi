@@ -124,7 +124,7 @@ class CandidateController extends Controller
                 'level' => 'required',
                 'experience' => 'required|numeric',
                 'current_ctc' => 'required|numeric',
-                'pan_no' => 'required',
+                'pan_no' => 'required|regex:/^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/',
                 'employment_status' => 'required'
             ];
 

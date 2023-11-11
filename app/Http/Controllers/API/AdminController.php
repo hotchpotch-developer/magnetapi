@@ -68,7 +68,7 @@ class AdminController extends Controller
         try {
             $rule = [
                 'current_password' => 'required',
-                'new_password' => 'required|min:8|regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/|same:confirm_password',
+                'new_password' => 'required|min:8|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/|same:confirm_password',
                 'confirm_password' => 'required|min:8'
             ];
 

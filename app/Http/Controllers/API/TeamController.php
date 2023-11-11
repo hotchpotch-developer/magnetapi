@@ -29,13 +29,13 @@ class TeamController extends Controller
             $rule = [
                 'first_name' => 'required|alpha',
                 'last_name' => 'required|alpha',
-                'phone' => 'required|unique:users,phone|numeric',
-                'email' => 'required|unique:users,email',
+                'phone' => 'required|unique:users,phone|numeric|digits:10',
+                'email' => 'required|email|email:dns|unique:users,email',
                 'role' => 'required',
-                'password' => 'required|min:8|regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/',
+                'password' => 'required|min:8|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/',
                 'status' => 'required',
-                'alternet_email' => 'nullable|sometimes|email|different:email',
-                'alternet_phone' => 'nullable|sometimes|numeric|different:phone'
+                'alternet_email' => 'nullable|sometimes|email|email:dns|different:email|unique:user_metas,email_1',
+                'alternet_phone' => 'nullable|sometimes|numeric|digits:10|different:phone|unique:user_metas,phone_1'
             ];
 
             if($request->has('profile_image')){
@@ -122,15 +122,17 @@ class TeamController extends Controller
             $rule = [
                 'first_name' => 'required|alpha',
                 'last_name' => 'required|alpha',
+                'phone' => 'required|unique:users,phone,' . $request->id .',id|numeric|digits:10',
+                'email' => 'required|email|email:dns|unique:users,email,' . $request->id . ',id',
                 'role' => 'required',
                 'status' => 'required',
-                'alternet_email' => 'nullable|sometimes|email|different:email',
-                'alternet_phone' => 'nullable|sometimes|numeric|different:phone'
+                'alternet_email' => 'nullable|sometimes|email|email:dns|different:email|unique:user_metas,email_1,' . $request->id . ',user_id',
+                'alternet_phone' => 'nullable|sometimes|numeric|digits:10|different:phone|unique:user_metas,phone_1,' . $request->id . ',user_id'
             ];
 
 
             if($request->password){
-                $rule = array_merge($rule, ['password' => 'required|min:8|regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/']);
+                $rule = array_merge($rule, ['password' => 'required|min:8|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/']);
             }
 
             if($request->has('profile_image')){

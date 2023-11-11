@@ -235,8 +235,8 @@ class AuthController extends Controller
     {
         try {
             $rule = [
-                'password' => 'required|min:8|max:16',
-                'password_confirmation' => 'required|same:password',
+                'password' => 'required|min:8|max:16|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/|same:password_confirmation',
+                'password_confirmation' => 'required',
             ];
             if ($errors = isValidatorFails($request, $rule)) return $errors;
             DB::beginTransaction();
