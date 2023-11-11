@@ -151,7 +151,9 @@ class AdminController extends Controller
                 'channel' => 'required',
                 'state' => 'required',
                 'location' => 'required',
-                'address' => 'required'
+                'address' => 'required',
+                'reporting_contact_no' => 'sometimes|nullable|numeric|digits:10|unique:contact_details,reporting_contact_no',
+                'reporting_email' => 'sometimes|nullable|email|email:dns|unique:contact_details,reporting_email',
             ];
 
             if ($errors = isValidatorFails($request, $rule)) return $errors;
@@ -201,8 +203,7 @@ class AdminController extends Controller
 
 
     public function editContactDetails(Request $request){
-        // try {
-
+        try {
             $rule = [
                 'name' => 'required',
                 'email' => 'required|email|email:dns|unique:contact_details,email,' .$request->id. ',id',
@@ -215,7 +216,9 @@ class AdminController extends Controller
                 'channel' => 'required',
                 'state' => 'required',
                 'location' => 'required',
-                'address' => 'required'
+                'address' => 'required',
+                'reporting_contact_no' => 'sometimes|nullable|numeric|digits:10|unique:contact_details,reporting_contact_no,' . $request->id .',id',
+                'reporting_email' => 'sometimes|nullable|email|email:dns|unique:contact_details,reporting_email,'  . $request->id .',id',
             ];
 
 
@@ -245,10 +248,10 @@ class AdminController extends Controller
             DB::commit();
 
             return jsonResponse(status: true, success: __('message.update', ['Contact Detail']));
-        // } catch (\Throwable $th) {
-        //     DB::rollBack();
-        //     return catchResponse(method: __METHOD__, exception: $th);
-        // }
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return catchResponse(method: __METHOD__, exception: $th);
+        }
     }
 
     /**
